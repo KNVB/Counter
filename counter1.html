@@ -33,13 +33,17 @@
 				transform-style: preserve-3d;
 				transition: transform 0.5s;
 			}
+			.rotateX-90
+			{
+				transform: rotateX(-90deg);
+			}
 			.rotateX180
 			{
 				transform: rotateX(180deg);
 			}
 			#topNext
 			{
-				display:none;
+				transform: rotateX(90deg);
 			}
 			#topCurrent,
 			#topNext
@@ -57,8 +61,9 @@
 				var topNext=document.getElementById("topNext");
 				var bottomCurrent=document.getElementById("bottomCurrent");
 				var bottomNext=document.getElementById("bottomNext");
-				$(topNext).show();
+
 				$(topCurrent).addClass("rotateX180");
+				$(topNext).addClass("rotateX-90");
 				setTimeout(() => {
 					
 					$(topCurrent).hide();
