@@ -1,0 +1,49 @@
+<html>
+	<head>
+		<style>
+			.digit
+			{ 
+				position: relative; 
+				font-size: 50px; 
+				display: inline-block; 
+				
+				color:white; 
+				white-space: pre; 
+				overflow: hidden; 
+				background-color:black;
+				margin:0px;
+				padding:0px;
+			}
+			.digit:after
+			{
+				display: block; 
+				position: absolute; 
+				z-index: 1; 
+				top: 50%; 
+				left: 0;
+				line-height:0;
+				content: attr(data-content); 
+				height: 50%; 
+				overflow: hidden; 
+				color: white; 
+				background-color:blue; 				
+			}
+			.digit:before 
+			{ 
+				display: block; 
+				position: absolute; 
+				z-index: 1; 
+				top: 0; 
+				left: 0; 
+				content: attr(data-content); 
+				height: 50%; 
+				overflow: hidden; 
+				color: white; 
+				background-color:red;
+			} 
+		</style>
+	</head>
+	<body>
+		<span class="digit" data-content="F">F</span>
+	</body>
+</html>	

@@ -1,0 +1,89 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.container
+			{
+				position:relative;	
+				perspective: 1000px;
+				width: 150px;
+				height: 150px;
+				font-weight:bold;
+				font-family:arial;
+				font-size:150px;
+				line-height: 150px;
+				text-align: center;				
+				display:inline-block;
+				box-sizing: border-box;
+			}
+			#bottomCurrent
+			{
+				height: 100%;
+				transform-origin: center;
+			}
+			.card
+			{
+				top:0;
+				color:white;
+				position:absolute;			
+				width: 100%;
+				background-color:black;
+				overflow:hidden;
+				box-sizing: border-box;
+				transform-style: preserve-3d;
+				transition: transform 0.5s;
+			}
+			.rotateX180
+			{
+				transform: rotateX(180deg);
+			}
+			#topNext
+			{
+				display:none;
+			}
+			#topCurrent,
+			#topNext
+			{
+				height: 50%;
+				border-bottom:2px solid black;
+				transform-origin: bottom;
+			}
+		</style>
+		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+		<script>
+			function start()
+			{
+				var topCurrent=document.getElementById("topCurrent");
+				var topNext=document.getElementById("topNext");
+				var bottomCurrent=document.getElementById("bottomCurrent");
+				var bottomNext=document.getElementById("bottomNext");
+				$(topNext).show();
+				$(topCurrent).addClass("rotateX180");
+				setTimeout(() => {
+					
+					$(topCurrent).hide();
+					$(bottomCurrent).hide();
+				},250);
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div id="bottomNext" class="card">
+				2
+			</div>
+			<div id="topNext" class="card">
+				2
+			</div>
+			<div id="bottomCurrent" class="card">
+				1
+			</div>
+			<div id="topCurrent" class="card">
+				1
+			</div>
+
+		</div>
+		<br>		
+		<button onclick="start()">Start</button>
+	</body>
+</html>	
