@@ -31,12 +31,9 @@
 				overflow:hidden;
 				box-sizing: border-box;
 				transform-style: preserve-3d;
-				transition: transform 0.5s;
+				
 			}
-			.rotateX-90
-			{
-				transform: rotateX(-90deg);
-			}
+			
 			.rotateX180
 			{
 				transform: rotateX(180deg);
@@ -44,6 +41,8 @@
 			#topNext
 			{
 				transform: rotateX(90deg);
+				transition: transform 0.5s;
+				animation-fill-mode: forwards;
 			}
 			#topCurrent,
 			#topNext
@@ -51,6 +50,11 @@
 				height: 50%;
 				border-bottom:2px solid black;
 				transform-origin: bottom;
+			}
+			@keyframes backward
+			{
+				from {transform: rotateX(90deg);}
+				to {transform: rotateX(0deg);}
 			}
 		</style>
 		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
@@ -62,31 +66,35 @@
 				var bottomCurrent=document.getElementById("bottomCurrent");
 				var bottomNext=document.getElementById("bottomNext");
 
-				$(topCurrent).addClass("rotateX180");
-				$(topNext).addClass("rotateX-90");
+				//$(topCurrent).addClass("rotateX180");
+				topNext.style.animationName="backward";
+				/*
 				setTimeout(() => {
 					
 					$(topCurrent).hide();
 					$(bottomCurrent).hide();
 				},250);
+				*/
 			}
 		</script>
 	</head>
 	<body>
 		<div class="container">
+		<!--
 			<div id="bottomNext" class="card">
 				2
-			</div>
+			</div>-->
 			<div id="topNext" class="card">
 				2
 			</div>
+		<!--	
 			<div id="bottomCurrent" class="card">
 				1
 			</div>
 			<div id="topCurrent" class="card">
 				1
 			</div>
-
+			-->
 		</div>
 		<br>		
 		<button onclick="start()">Start</button>
