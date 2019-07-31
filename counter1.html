@@ -16,14 +16,25 @@
 				display:inline-block;
 				box-sizing: border-box;
 			}
+			.bottomCurrent,
+			.topCurrent
+			{
+				z-index:4;
+			}
+			.bottomNext,
 			.topNext
 			{
-				transform: rotateX(90deg);
+				z-index:3;
+			}
+			.bottomNext
+			{
+				transform: rotateX(90deg);	
 			}
 			.bottomCurrent,
 			.bottomNext
 			{
 				height: 100%;
+				transform-origin: center;
 			}
 			.topCurrent,
 			.topNext
@@ -46,22 +57,73 @@
 				overflow:hidden;
 				box-sizing: border-box;
 			}
+			.rotateX90
+			{
+				transform: rotateX(90deg);
+				transition: transform 0.5s;				
+			}
+			.rotateX
+			{
+				animation-name: backward;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes backward
+			{
+				from {transform: rotateX(90deg);}
+				to {transform: rotateX(0deg);}
+			}
 		</style>
 		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
 		<script>
+			var state="f";
 			function start()
 			{
 				var topCurrent=document.getElementById("topCurrent");
 				var topNext=document.getElementById("topNext");
 				var bottomCurrent=document.getElementById("bottomCurrent");
 				var bottomNext=document.getElementById("bottomNext");
+				var transitionDuration=0.5;
+				
+				if (state=="f")
+				{
+					topNext.style.zIndex=4;
+					bottomNext.style.zIndex=4;
+					$(topCurrent).addClass("rotateX90");
+					setTimeout(() => {
+						$(bottomNext).addClass("rotateX").promise().done(function(buttomCurrent){
+							$(topCurrent).hide();
+							topCurrent.style.zIndex=3;
+							$(topNext).removeClass("rotateX90");
+							bottomCurrent.style.zIndex=3;
+							$(buttomCurrent).addClass("rotateX90");
+							state="b";
+						});
+					},transitionDuration*1000);
+				}
+				else
+				{
+					bottomNext.style.zIndex=3;
+					$(topCurrent).removeClass("rotateX90");
+					$(topNext).addClass("rotateX90");
 
+					setTimeout(() => {
+							//$(bottomCurrent).addClass("rotateX");
+							topNext.style.zIndex=3;
+							topCurrent.style.zIndex=4;
+							//bottomCurrent.style.zIndex=4;
+							state="f";
+					},transitionDuration*1000);
+					
+					
+					
+				}
 			}
 		</script>
 	</head>
 	<body>
 		<div class="container">
-			<div class="bottomNext">
+			<div class="bottomNext" id="bottomNext">
 				2
 			</div>
 			<div class="bottomCurrent" id="bottomCurrent">
