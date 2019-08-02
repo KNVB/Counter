@@ -83,6 +83,19 @@
 			{
 				transform: rotateX(90deg);
 			}
+			#bottom_current
+			{
+				z-index:2;
+			}
+			#top_current
+			{
+				z-index:4;
+			}
+			#bottom_next,
+			#top_next
+			{
+				z-index:1;
+			}
 		</style>
 		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
 		<script>
@@ -93,17 +106,22 @@
 				var topCurrent=document.getElementById("top_current");
 				var topNext=document.getElementById("top_next");
 				var transitionDuration=0.5;
+				
 				$(topNext).removeClass("transform0to90");
-				
-				
+				topNext.style.zIndex=3;
 				$(topCurrent).addClass("rotate0to_90");
 				setTimeout(() => {
 					topNext.style.zIndex=4;
-					bottomCurrent.style.zIndex=3;
-					bottomNext.style.zIndex=4;
+					bottomCurrent.style.zIndex=1;
+					bottomNext.style.zIndex=2;
 					$(bottomNext).addClass("rotate90to0");
+					setTimeout(() => {
+						topCurrent.style.zIndex=1;
+						$(topCurrent).removeClass("rotate0to_90");
+						$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
+					},transitionDuration*1000);
 				},transitionDuration*1000);
-								
+						
 			}
 		</script>
 	</head>
