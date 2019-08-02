@@ -1,0 +1,233 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.container
+			{
+				width:100px;
+				height:150px;
+				box-sizing: border-box;
+				position:relative;
+				transform-style: preserve-3d;
+			}
+			.halfCard
+			{
+				height: 50%;
+				transform-origin: bottom;
+				border-bottom:2px solid black;
+				box-sizing: border-box;
+				overflow:hidden;
+			}
+			.fullCard
+			{
+				height: 100%;
+				border-bottom-left-radius: 5px;
+				border-bottom-right-radius: 5px;
+			}
+			.fullCard,
+			.halfCard
+			{
+				border-top-left-radius: 5px;
+				border-top-right-radius: 5px; 
+				position:absolute;
+				background-color: black;
+				padding: 0px;
+				width: 100%;
+				margin: 0px;
+				line-height: 150px;
+				color: white;
+				font-weight: bold;
+				font-family:arial;
+				font-size: 5.5em;
+				text-align: center;
+			}			
+			.rotate0to90
+			{
+				animation-name: r0to90;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r0to90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(90deg);}
+			}
+			.rotate90to0
+			{
+				animation-name: r90to0;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r90to0
+			{
+				from {transform: rotateX(90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			.rotate0to_90
+			{
+				animation-name: r0to_90;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r0to_90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(-90deg);}
+			}
+			.rotate_90to0
+			{
+				animation-name: r_90to0;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r_90to0
+			{
+				from {transform: rotateX(-90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			.transform0to_90
+			{
+				transform: rotateX(-90deg);
+			}
+			.transform0to90
+			{
+				transform: rotateX(90deg);
+			}
+			#bottom_current
+			{
+				z-index:2;
+			}
+			#top_current
+			{
+				z-index:4;
+			}
+			#bottom_next,
+			#top_next
+			{
+				z-index:1;
+			}
+		</style>
+		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+		<script>
+			var showCardList={};
+			var hiddenCardList={};
+			var transitionDuration=0.4;
+			var startCount=0,step=1,currentCount;
+			var endCount=9;
+			$(document).ready(function(){
+				
+				currentCount=startCount;
+				showCardList.top=document.getElementById("top_current");
+				showCardList.buttom=document.getElementById("bottom_current");
+				hiddenCardList.top=document.getElementById("top_next");
+				hiddenCardList.buttom=document.getElementById("bottom_next");
+				
+				showCardList.top.textContent=currentCount;
+				showCardList.buttom.textContent=currentCount;
+			});
+			function add(theButton)
+			{
+				theButton.disabled=true;
+				upCount().then(function(){
+					theButton.disabled=false;
+				});
+			}
+			function minus(theButton)
+			{
+				theButton.disabled=true;
+				downCount().then(function(){
+					theButton.disabled=false;
+				});
+			}
+			function downCount()
+			{
+				return new Promise(function(resolve, reject) {
+					var bottomNext=hiddenCardList.buttom;
+					var bottomCurrent=showCardList.buttom;
+					var topCurrent=showCardList.top;
+					var topNext=hiddenCardList.top;
+					
+					if (currentCount==startCount)
+						currentCount=endCount;
+					else
+						currentCount-=step;
+						
+					topNext.textContent=currentCount;
+					bottomNext.textContent=currentCount;
+					
+					topCurrent.style.zIndex=3;
+					$(topNext).addClass("transform0to_90");
+					$(bottomCurrent).addClass("rotate0to90");
+					setTimeout(() => {
+						topNext.style.zIndex=4;
+						$(topNext).addClass("rotate_90to0");
+						setTimeout(() => {
+							
+							topCurrent.style.zIndex=1;
+							bottomCurrent.style.zIndex=1;
+							$(bottomCurrent).removeClass("rotate0to90");
+							$(topNext).removeClass("rotate_90to0").removeClass("transform0to_90");
+							bottomNext.style.zIndex=4;
+							
+							showCardList.buttom=bottomNext;
+							hiddenCardList.buttom=bottomCurrent;
+							hiddenCardList.top=topCurrent;
+							showCardList.top=topNext;
+							
+							resolve(true);
+						},transitionDuration*1000);
+					},transitionDuration*1000);
+				});	
+			}
+			function upCount()
+			{
+				return new Promise(function(resolve, reject) {
+					var bottomNext=hiddenCardList.buttom;
+					var bottomCurrent=showCardList.buttom;
+					var topCurrent=showCardList.top;
+					var topNext=hiddenCardList.top;
+				
+					if (currentCount==endCount)
+						currentCount=startCount;
+					else
+						currentCount+=step;
+					
+					topNext.textContent=currentCount;
+					bottomNext.textContent=currentCount;
+					
+					$(bottomNext).addClass("transform0to90");
+					topNext.style.zIndex=3;
+					$(topCurrent).addClass("rotate0to_90");
+					setTimeout(() => {
+						topNext.style.zIndex=4;
+						bottomCurrent.style.zIndex=1;
+						bottomNext.style.zIndex=2;
+						$(bottomNext).addClass("rotate90to0");
+						setTimeout(() => {
+							topCurrent.style.zIndex=1;
+							$(topCurrent).removeClass("rotate0to_90");
+							$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
+							
+							showCardList.buttom=bottomNext;
+							hiddenCardList.buttom=bottomCurrent;
+							hiddenCardList.top=topCurrent;
+							showCardList.top=topNext;
+							resolve(true);
+						},transitionDuration*1000);
+					},transitionDuration*1000);
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div id="bottom_next" class="fullCard"></div>
+			<div id="bottom_current" class="fullCard"></div>
+			<div id="top_next" class="halfCard"></div>
+			<div id="top_current" class="halfCard"></div>
+		</div>
+		<br>		
+		<button onclick="add(this)">+</button>
+		<button onclick="minus(this)">-</button>
+	</body>
+</html>	
