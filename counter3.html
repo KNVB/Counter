@@ -4,7 +4,7 @@
 		<style>
 			.container
 			{
-				width:150px;
+				width:100px;
 				height:150px;
 				//background-color:red;
 				box-sizing: border-box;
@@ -15,19 +15,23 @@
 			{
 				height: 50%;
 				transform-origin: bottom;
-				border-bottom:2px solid blue;
+				border-bottom:2px solid black;
 				box-sizing: border-box;
 				overflow:hidden;
 			}
 			.fullCard
 			{
 				height: 100%;
+				border-bottom-left-radius: 5px;
+				border-bottom-right-radius: 5px;
 			}
 			.fullCard,
 			.halfCard
 			{
+				border-top-left-radius: 5px;
+				border-top-right-radius: 5px; 
 				position:absolute;
-				background: blue;
+				background-color: black;
 				padding: 0px;
 				width: 100%;
 				margin: 0px;
@@ -99,7 +103,7 @@
 		</style>
 		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
 		<script>
-			function start()
+			function start(theButton)
 			{
 				var bottomNext=document.getElementById("bottom_next");
 				var bottomCurrent=document.getElementById("bottom_current");
@@ -107,7 +111,8 @@
 				var topNext=document.getElementById("top_next");
 				var transitionDuration=0.5;
 				
-				$(topNext).removeClass("transform0to90");
+				theButton.disabled=true;
+				$(bottomNext).addClass("transform0to90");
 				topNext.style.zIndex=3;
 				$(topCurrent).addClass("rotate0to_90");
 				setTimeout(() => {
@@ -119,6 +124,7 @@
 						topCurrent.style.zIndex=1;
 						$(topCurrent).removeClass("rotate0to_90");
 						$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
+						theButton.disabled=false;
 					},transitionDuration*1000);
 				},transitionDuration*1000);
 						
@@ -127,13 +133,13 @@
 	</head>
 	<body>
 		<div class="container">
-			<div id="bottom_next" class="fullCard transform0to90">
+			<div id="bottom_next" class="fullCard">
 				2
 			</div>
 			<div id="bottom_current" class="fullCard">
 				1
 			</div>				
-			<div id="top_next" class="halfCard transform0to90">
+			<div id="top_next" class="halfCard">
 				2
 			</div>
 			<div id="top_current" class="halfCard">
@@ -141,6 +147,6 @@
 			</div>
 		</div>
 		<br>		
-		<button onclick="start()">Start</button>
+		<button onclick="start(this)">Start</button>
 	</body>
 </html>	
