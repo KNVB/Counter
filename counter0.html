@@ -1,3 +1,4 @@
+
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -15,27 +16,20 @@
 				text-align: center;				
 				display:inline-block;
 				box-sizing: border-box;
-				transform-style: preserve-3d;
 			}
-			.bottomCurrent,
 			.topCurrent
 			{
 				z-index:4;
 			}
-			.bottomNext,
 			.topNext
 			{
 				z-index:3;
-			}
-			.bottomNext
-			{
-				transform: rotateX(90deg);	
 			}
 			.bottomCurrent,
 			.bottomNext
 			{
 				height: 100%;
-				transform-origin: center;
+				z-index:2;
 			}
 			.topCurrent,
 			.topNext
@@ -77,48 +71,18 @@
 		</style>
 		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
 		<script>
-			var state="f";
 			function start()
 			{
 				var topCurrent=document.getElementById("topCurrent");
 				var topNext=document.getElementById("topNext");
 				var bottomCurrent=document.getElementById("bottomCurrent");
 				var bottomNext=document.getElementById("bottomNext");
-				var transitionDuration=0.5;
 				
-				if (state=="f")
-				{
-					topNext.style.zIndex=4;
-					bottomNext.style.zIndex=4;
-					$(topCurrent).addClass("rotateX90");
-					setTimeout(() => {
-						$(bottomNext).addClass("rotateX").promise().done(function(buttomCurrent){
-							$(topCurrent).hide();
-							topCurrent.style.zIndex=3;
-							$(topNext).removeClass("rotateX90");
-							bottomCurrent.style.zIndex=3;
-							$(buttomCurrent).addClass("rotateX90");
-							state="b";
-						});
-					},transitionDuration*1000);
-				}
-				else
-				{
-					bottomNext.style.zIndex=3;
-					$(topCurrent).removeClass("rotateX90");
-					$(topNext).addClass("rotateX90");
-
-					setTimeout(() => {
-							//$(bottomCurrent).addClass("rotateX");
-							topNext.style.zIndex=3;
-							topCurrent.style.zIndex=4;
-							//bottomCurrent.style.zIndex=4;
-							state="f";
-					},transitionDuration*1000);
-					
-					
-					
-				}
+				$(topCurrent).addClass("rotateX90");
+				
+				setTimeout(() => {
+					$(bottomNext).addClass("rotateX");
+				},500);				
 			}
 		</script>
 	</head>

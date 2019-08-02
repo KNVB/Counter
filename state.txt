@@ -1,0 +1,5 @@
+				Initial	Start	End
+.topCurrent		|(4)	-(3)	|(4)
+.topNext		-(3)	|(4)    -(3)
+.bottomCurrent	|(3)	-(3)    |(3)
+.bottomNext		-(3)	|(3)    -(3)

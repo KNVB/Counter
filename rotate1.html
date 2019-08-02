@@ -1,0 +1,79 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.container
+			{
+				height:150px;
+				width:150px;
+				line-height: 150px;
+				display:flex;
+				perspective: 1000px;
+				transform-style: preserve-3d;
+				box-sizing: border-box;
+				position:relative;	
+			}
+			.card1
+			{
+				top:0;
+				position:absolute;			
+				width: 100%;
+				height: 100%;
+				background-color:blue;
+				font-size:150px;
+				font-weight:bold;
+				font-family:arial;
+				color:white;
+				text-align: center;
+				
+			}
+			.card2
+			{
+				position:absolute;			
+				width: 100%;
+				height: 50%;
+				background-color:red;
+				font-size:150px;
+				font-weight:bold;
+				font-family:arial;
+				color:white;
+				text-align: center;
+				top:0;
+			}
+			.flexContainer
+			{
+				display:flex;
+				flex-direction:row; 
+			}
+		</style>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>
+					<div class="container">
+						<div id="0" class="card1">1</div>
+						<div id="1" class="card2">1</div>
+					</div>
+					
+				</td>
+				<td>
+					<div class="container">
+						<div id="1" class="card2">1</div>
+					</div>
+				</td>				
+			</tr>
+		</table>
+		<bR>
+		<div class="flexContainer">
+			<div class="container">
+				<div id="0" class="card1">1</div>
+			</div>
+			<div style="width:2px">
+			</div>
+			<div class="container">
+				<div id="1" class="card2">1</div>
+			</div>
+		</div>	
+	</body>
+</html>	

@@ -1,0 +1,132 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.container
+			{
+				height:150px;
+				width:150px;
+				display:flex;
+				perspective: 1000px;
+				transform-style: preserve-3d;
+				box-sizing: border-box;
+				position:relative;	
+			}
+			.fullCard
+			{
+				height: 100%;
+				background-color:blue;
+				transform-origin: bottom;
+			}
+			.halfCard
+			{
+				height: 50%;
+				background-color:red;
+				transform-origin: bottom;
+				overflow:hidden;
+			}
+			.hiddenCard
+			{
+				z-index:3;
+			}
+			.fullCard,
+			.halfCard
+			{
+				top:0;
+				position:absolute;			
+				width: 100%;
+				font-size:150px;
+				font-weight:bold;
+				font-family:arial;
+				color:white;
+				text-align: center;
+				line-height: 150px;
+			}
+			.rotateForward
+			{
+				animation-name: forward;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;		
+			}
+			.rotateBackward
+			{
+				animation-name: backward;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes backward
+			{
+				from {transform: rotateX(-90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			@keyframes forward
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(-90deg);}
+			}
+			.showCard
+			{
+				z-index:4;
+			}
+			.transformBackward
+			{
+				transform: rotateX(90deg);
+			}			
+			.transformForward
+			{
+				transform: rotateX(-90deg);
+			}
+		</style>
+		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+		<script>
+			var counter;
+			
+			
+			$(document).ready(function(){
+			
+				
+			});
+			function go()
+			{
+				var topCurrent=document.getElementById("topCurrent");
+				var topNext=document.getElementById("topNext");
+				var bottomCurrent=document.getElementById("bottomCurrent");
+				var bottomNext=document.getElementById("bottomNext");
+				var transitionDuration=0.5;
+				
+				
+				$(topNext).removeClass("hiddenCard").addClass("showCard");
+				$(bottomNext).addClass("transformBackward").removeClass("hiddenCard").addClass("showCard");
+				$(topCurrent).addClass("rotateForward");
+				setTimeout(() => {
+					$(bottomNext).addClass("rotateBackward");
+				},transitionDuration*1000);
+				
+			}
+		</script>
+	</head>
+	<body>
+		<div style="display:flex;flex-direction:row">
+			<div class="container">
+				<div id="bottomNext" class="fullCard hiddenCard">2</div>
+				
+			</div>
+			<div class="container">
+		
+				<div id="bottomCurrent" class="fullCard showCard">1</div>
+		
+			</div>
+			<div class="container">
+		
+				<div id="topNext" class="halfCard hiddenCard">2</div>
+		
+			</div>
+			<div class="container">	
+		
+				<div id="topCurrent" class="halfCard showCard">1</div>
+			
+			</div>
+		</div>
+		<button onclick="go()">go</button>
+	</body>
+</html>	

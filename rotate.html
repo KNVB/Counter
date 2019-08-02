@@ -1,0 +1,131 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.card
+			{
+				position:absolute;			
+				width: 100%;
+				height: 100%;
+				background-color:blue;
+				font-size:150px;
+				font-weight:bold;
+				font-family:arial;
+				color:white;
+				text-align: center;
+			}
+			.container
+			{
+				height:150px;
+				width:150px;
+				line-height: 150px;
+
+				perspective: 1000px;
+				transform-style: preserve-3d;
+				box-sizing: border-box;
+				position:relative;	
+			}
+			.rotate0to_90
+			{
+				animation-name: r0to_90;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			.rotate_90to0
+			{
+				animation-name: r_90to0;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			.rotate0to90
+			{
+				animation-name: r0to90;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			.rotate90to0
+			{
+				animation-name: r90to0;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r0to_90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(-90deg);}
+			}
+			@keyframes r_90to0
+			{
+				from {transform: rotateX(-90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			@keyframes r0to90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(90deg);}
+			}
+			@keyframes r90to0
+			{
+				from {transform: rotateX(90deg);}
+				to {transform: rotateX(0deg);}
+			}
+		</style>
+		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+		<script>
+			function toggle0To90(id)
+			{
+				var div=document.getElementById(id);
+				$(div).toggleClass("rotate0to90");
+			}
+			function toggle90To0(id)
+			{
+				var div=document.getElementById(id);
+				$(div).toggleClass("rotate90to0");
+			}
+			function toggle0To_90(id)
+			{
+				var div=document.getElementById(id);
+				$(div).toggleClass("rotate0to_90");
+			}
+			function toggle_90To0(id)
+			{
+				var div=document.getElementById(id);
+				$(div).toggleClass("rotate-90to0");
+			}
+		</script>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>
+					<div class="container">
+						<div id="0" class="card">1</div>
+					</div>
+					<br>
+					<button onclick="toggle0To90(0)">Toggle 0 to 90 Degree</button>
+				</td>
+				<td>
+					<div class="container">
+						<div id="1" class="card rotate0to90">2</div>
+					</div>
+					<br>
+					<button onclick="toggle90To0(1)">Toggle 90 to 0 Degree</button>
+				</td>
+				<td>
+					<div class="container">
+						<div id="2" class="card">1</div>
+					</div>
+					<br>
+					<button onclick="toggle0To_90(2)">Toggle 0 to -90 Degree</button>
+				</td>
+				<td>
+					<div class="container">
+						<div id="3" class="card rotate0to90">2</div>
+					</div>
+					<br>
+					<button onclick="toggle_90To0(3)">Toggle -90 to 0 Degree</button>
+				</td>				
+			</tr>
+		</table>
+	</body>
+</html>	
