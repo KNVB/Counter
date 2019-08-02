@@ -4,129 +4,116 @@
 		<style>
 			.container
 			{
-				height:150px;
-				width:150px;
-				display:flex;
-				perspective: 1000px;
-				transform-style: preserve-3d;
-				box-sizing: border-box;
 				position:relative;	
-			}
-			.fullCard
-			{
-				height: 100%;
-				background-color:blue;
-				transform-origin: bottom;
-			}
-			.halfCard
-			{
-				height: 50%;
-				background-color:red;
-				transform-origin: bottom;
-				overflow:hidden;
-			}
-			.hiddenCard
-			{
-				z-index:3;
-			}
-			.fullCard,
-			.halfCard
-			{
-				top:0;
-				position:absolute;			
-				width: 100%;
-				font-size:150px;
+				perspective: 1000px;
+				width: 150px;
+				height: 150px;
 				font-weight:bold;
 				font-family:arial;
-				color:white;
-				text-align: center;
+				font-size:150px;
 				line-height: 150px;
+				text-align: center;				
+				display:inline-block;
+				//border:1px solid blue;
+				box-sizing: border-box;
 			}
-			.rotateForward
+			.bottom
 			{
-				animation-name: forward;
-				animation-duration: 0.5s;
-				animation-fill-mode: forwards;		
+				height: 100%;
+				//border:1px solid green;
 			}
-			.rotateBackward
+			.top
 			{
-				animation-name: backward;
+				height: 50%;
+				//border:1px solid red;
+				//animation-name: forward;
 				animation-duration: 0.5s;
 				animation-fill-mode: forwards;
+				transform-style: preserve-3d;
+				transform-origin: bottom;
+				border-bottom:2px solid black;
+			}
+			.bottom,
+			.top
+			{
+				top:0;
+				color:white;
+				position:absolute;			
+				width: 100%;
+				background-color:black;
+				overflow:hidden;
+				box-sizing: border-box;
+				transform-origin: bottom;
+			}
+			#top_next
+			{
+				//animation-name: forward;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+				transform-style: preserve-3d;
+				transform-origin: bottom;
+			}
+			#bottom_next						
+			{
+				transform: rotateX(90deg);
+				perspective: 0px;
+				transform-origin: center;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+				transform-style: preserve-3d;
+				
+			}
+			@keyframes forward 
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(90deg);}
 			}
 			@keyframes backward
 			{
-				from {transform: rotateX(-90deg);}
+				from {transform: rotateX(90deg);}
 				to {transform: rotateX(0deg);}
 			}
-			@keyframes forward
-			{
-				from {transform: rotateX(0deg);}
-				to {transform: rotateX(-90deg);}
-			}
-			.showCard
-			{
-				z-index:4;
-			}
-			.transformBackward
-			{
-				transform: rotateX(90deg);
-			}			
-			.transformForward
-			{
-				transform: rotateX(-90deg);
-			}
 		</style>
-		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
 		<script>
-			var counter;
-			
-			
-			$(document).ready(function(){
-			
-				
-			});
-			function go()
+			function start()
 			{
-				var topCurrent=document.getElementById("topCurrent");
-				var topNext=document.getElementById("topNext");
-				var bottomCurrent=document.getElementById("bottomCurrent");
-				var bottomNext=document.getElementById("bottomNext");
-				var transitionDuration=0.5;
+				var bottomNext=document.getElementById("bottom_next");
+				var bottomCurrent=document.getElementById("bottom_current");
+				var topCurrent=document.getElementById("top_current");
+				var topNext=document.getElementById("top_next");
+				//bottomNext.style.display="block";
 				
 				
-				$(topNext).removeClass("hiddenCard").addClass("showCard");
-				$(bottomNext).addClass("transformBackward").removeClass("hiddenCard").addClass("showCard");
-				$(topCurrent).addClass("rotateForward");
+				//topNext.style.animationName="backward";
+				
+				topCurrent.style.animationName="forward";
 				setTimeout(() => {
-					$(bottomNext).addClass("rotateBackward");
-				},transitionDuration*1000);
+					bottomNext.style.animationName="backward";
+				},500);
+				
+				
 				
 			}
 		</script>
 	</head>
 	<body>
-		<div style="display:flex;flex-direction:row">
-			<div class="container">
-				<div id="bottomNext" class="fullCard hiddenCard">2</div>
-				
+		<div class="container">
+			<div id="bottom_current" class="bottom">
+				1
 			</div>
-			<div class="container">
-		
-				<div id="bottomCurrent" class="fullCard showCard">1</div>
-		
+			<div id="bottom_next" class="bottom">
+				2
 			</div>
-			<div class="container">
-		
-				<div id="topNext" class="halfCard hiddenCard">2</div>
-		
+			<div id="top_next" class="top">
+				2
 			</div>
-			<div class="container">	
-		
-				<div id="topCurrent" class="halfCard showCard">1</div>
+			<div id="top_current" class="top">
+				1
+			</div>
 			
-			</div>
+			
 		</div>
-		<button onclick="go()">go</button>
+		<br>		
+		<button onclick="start()">Start</button>
 	</body>
 </html>	

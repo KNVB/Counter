@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<style>
+			.outer {
+				display: table;
+				width: 150px;
+				height: 150px;
+				border:1px solid red;
+				padding:0px;
+				margin:0px;
+				perspective: 1000px;
+				transform-style: preserve-3d;
+			}
+
+			.middle {
+			  display: table-cell;
+			  vertical-align: top;
+			  font-size:150px;
+			  text-align:center;
+			  background-color:blue;
+			  color:white;			 
+			}
+			.fullCard{
+			
+			  height:100%;
+			
+			}
+			.halfCard{
+				height:50%;
+				background-color:red;
+			}
+			.rotate0to90
+			{
+				animation-name: r0to90;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r0to90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(90deg);}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="outer">
+		  <div class="middle">
+			<div class="fullCard rotate0to90">
+				1
+			</div>
+			<div class="halfCard rotate0to90">
+				2
+			</div>
+		  </div>
+		</div>
+	</body>
+</html>

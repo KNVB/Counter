@@ -2,28 +2,31 @@
 	<head>
 		<meta charset="utf-8">
 		<style>
-			.card
-			{
-				position:absolute;			
-				width: 100%;
-				height: 100%;
-				background-color:blue;
-				font-size:150px;
-				font-weight:bold;
-				font-family:arial;
-				color:white;
-				text-align: center;
-			}
 			.container
 			{
-				height:150px;
 				width:150px;
-				line-height: 150px;
-
-				perspective: 1000px;
-				transform-style: preserve-3d;
+				height:150px;
+				//background-color:red;
 				box-sizing: border-box;
-				position:relative;	
+				position:relative;
+				transform-style: preserve-3d;
+			}
+			.fullCard
+			{
+				position:absolute;
+				background: tomato;
+				padding: 0px;
+				width: 100%;
+				height: 100%;
+				margin: 0px;
+
+				line-height: 150px;
+				color: white;
+				font-weight: bold;
+				font-family:arial;
+				font-size: 5.5em;
+				text-align: center;
+				
 			}
 			.rotate0to_90
 			{
@@ -99,28 +102,28 @@
 			<tr>
 				<td>
 					<div class="container">
-						<div id="0" class="card">1</div>
+						<div id="0" class="fullCard">1</div>
 					</div>
 					<br>
 					<button onclick="toggle0To90(0)">Toggle 0 to 90 Degree</button>
 				</td>
 				<td>
 					<div class="container">
-						<div id="1" class="card rotate0to90">2</div>
+						<div id="1" class="fullCard rotate0to90">2</div>
 					</div>
 					<br>
 					<button onclick="toggle90To0(1)">Toggle 90 to 0 Degree</button>
 				</td>
 				<td>
 					<div class="container">
-						<div id="2" class="card">1</div>
+						<div id="2" class="fullCard">1</div>
 					</div>
 					<br>
 					<button onclick="toggle0To_90(2)">Toggle 0 to -90 Degree</button>
 				</td>
 				<td>
 					<div class="container">
-						<div id="3" class="card rotate_90to0">2</div>
+						<div id="3" class="fullCard rotate_90to0">2</div>
 					</div>
 					<br>
 					<button onclick="toggle_90To0(3)">Toggle -90 to 0 Degree</button>
