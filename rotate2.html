@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.backcard
+			{
+				clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
+				transform: rotateX(180deg);
+				position:absolute;
+				padding: 0px;
+				width: 100%;
+				margin: 0px;
+			}
+			.container
+			{
+				height:150px;
+				width:150px;
+				background-color:green;
+				border:1px solid red;
+				position:relative;
+			}			
+			.countContentDiv
+			{
+				line-height: 150px;
+				color: white;
+				font-weight: bold;
+				font-family:arial;
+				font-size: 5.5em;
+				text-align: center;
+			}
+			.rotate_90to0
+			{
+				animation-name: r_90to0;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r_90to0
+			{
+				from {transform: rotateX(180deg);}
+				to {transform: rotateX(0deg);}
+			}			
+		</style>
+		<script>
+			function go(theButton)
+			{
+				var backcard=document.getElementById("backcard");
+				backcard.className+=" rotate_90to0";
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div id="backcard" class="backcard">
+				<div class="countContentDiv">
+					4
+				</div>
+			</div>
+		</div>	
+		<button onclick="go(this)">Go</button>
+	</body>
+</html>	

@@ -115,120 +115,110 @@
 			var showCardList={};
 			var hiddenCardList={};
 			var transitionDuration=0.4;
-			var startCount=0,step=1,currentCount;
-			var endCount=9;
+			var step=1,currentIndex=0;
+			var countContentDivList=[];
 			$(document).ready(function(){
 				
-				currentCount=startCount;
 				showCardList.top=document.getElementById("top_current");
 				showCardList.buttom=document.getElementById("bottom_current");
 				hiddenCardList.top=document.getElementById("top_next");
 				hiddenCardList.buttom=document.getElementById("bottom_next");
 				
-				countContentDiv=document.createElement("div");
-				countContentDiv.className="countContentDiv";
-				countContentDiv.textContent=currentCount;
-				$(showCardList.top).append(countContentDiv);
-				$(showCardList.buttom).append($(countContentDiv).clone(true));
+				for (var i=0;i<10;i++)
+				{
+					var countContentDiv=document.createElement("div");
+					countContentDiv.className="countContentDiv";
+					countContentDiv.textContent=i;
+					countContentDivList.push(countContentDiv);
+				}
+				$(showCardList.top).append(countContentDivList[0]);
+				$(showCardList.buttom).append($(countContentDivList[0]).clone(true));
 			});
 			function add(theButton)
 			{
 				theButton.disabled=true;
-				upCount().then(function(){
+				updateCount("+").then(function(){
 					theButton.disabled=false;
 				});
 			}
 			function minus(theButton)
 			{
 				theButton.disabled=true;
-				downCount().then(function(){
+				updateCount("-").then(function(){
 					theButton.disabled=false;
 				});
 			}
-			function downCount()
+			function updateCount(flag)
 			{
 				return new Promise(function(resolve, reject) {
 					var bottomNext=hiddenCardList.buttom;
 					var bottomCurrent=showCardList.buttom;
 					var topCurrent=showCardList.top;
 					var topNext=hiddenCardList.top;
-					
-					if (currentCount==startCount)
-						currentCount=endCount;
+					eval("currentIndex"+flag+"="+step);
+					if (currentIndex<0)
+						currentIndex=countContentDivList.length-1;
 					else
-						currentCount-=step;
-						
-					var countContentDiv=document.createElement("div");
-					countContentDiv.className="countContentDiv";
-					countContentDiv.textContent=currentCount;
-					$(topNext).empty().append(countContentDiv);
-					$(bottomNext).empty().append($(countContentDiv).clone(true));	
+					{
+						if (currentIndex>=countContentDivList.length)
+							currentIndex=0;
+					}
+					initNextCards(topNext,bottomNext,currentIndex);
+					switch (flag)
+					{
+						case "+":
+								topNext.style.zIndex=3;
+								$(bottomNext).addClass("transform0to90");
+								$(topCurrent).addClass("rotate0to_90");
+								setTimeout(() => {
+									topNext.style.zIndex=4;
+									bottomCurrent.style.zIndex=1;
+									bottomNext.style.zIndex=2;
+									$(bottomNext).addClass("rotate90to0");
+									setTimeout(() => {
+										topCurrent.style.zIndex=1;
+										$(topCurrent).removeClass("rotate0to_90");
+										$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
+										swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
+										resolve(true);
+									},transitionDuration*1000);
+								},transitionDuration*1000);
+								break;
+						case "-":
+								topCurrent.style.zIndex=3;
+								$(topNext).addClass("transform0to_90");
+								$(bottomCurrent).addClass("rotate0to90");
+								setTimeout(() => {
+									topNext.style.zIndex=4;
+									$(topNext).addClass("rotate_90to0");
+									setTimeout(() => {
 										
-					topCurrent.style.zIndex=3;
-					$(topNext).addClass("transform0to_90");
-					$(bottomCurrent).addClass("rotate0to90");
-					setTimeout(() => {
-						topNext.style.zIndex=4;
-						$(topNext).addClass("rotate_90to0");
-						setTimeout(() => {
-							
-							topCurrent.style.zIndex=1;
-							bottomCurrent.style.zIndex=1;
-							$(bottomCurrent).removeClass("rotate0to90");
-							$(topNext).removeClass("rotate_90to0").removeClass("transform0to_90");
-							bottomNext.style.zIndex=4;
-							
-							showCardList.buttom=bottomNext;
-							hiddenCardList.buttom=bottomCurrent;
-							hiddenCardList.top=topCurrent;
-							showCardList.top=topNext;
-							
-							resolve(true);
-						},transitionDuration*1000);
-					},transitionDuration*1000);
-				});	
-			}
-			function upCount()
-			{
-				return new Promise(function(resolve, reject) {
-					var bottomNext=hiddenCardList.buttom;
-					var bottomCurrent=showCardList.buttom;
-					var topCurrent=showCardList.top;
-					var topNext=hiddenCardList.top;
-				
-					if (currentCount==endCount)
-						currentCount=startCount;
-					else
-						currentCount+=step;
-					
-					var countContentDiv=document.createElement("div");
-					countContentDiv.className="countContentDiv";
-					countContentDiv.textContent=currentCount;
-
-					$(topNext).empty().append(countContentDiv);
-					$(bottomNext).empty().append($(countContentDiv).clone(true));	
-					
-					topNext.style.zIndex=3;
-					$(bottomNext).addClass("transform0to90");
-					$(topCurrent).addClass("rotate0to_90");
-					setTimeout(() => {
-						topNext.style.zIndex=4;
-						bottomCurrent.style.zIndex=1;
-						bottomNext.style.zIndex=2;
-						$(bottomNext).addClass("rotate90to0");
-						setTimeout(() => {
-							topCurrent.style.zIndex=1;
-							$(topCurrent).removeClass("rotate0to_90");
-							$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
-							
-							showCardList.buttom=bottomNext;
-							hiddenCardList.buttom=bottomCurrent;
-							hiddenCardList.top=topCurrent;
-							showCardList.top=topNext;
-							resolve(true);
-						},transitionDuration*1000);
-					},transitionDuration*1000);
+										topCurrent.style.zIndex=1;
+										bottomCurrent.style.zIndex=1;
+										$(bottomCurrent).removeClass("rotate0to90");
+										$(topNext).removeClass("rotate_90to0").removeClass("transform0to_90");
+										bottomNext.style.zIndex=4;
+										
+										swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
+										resolve(true);
+									},transitionDuration*1000);
+								},transitionDuration*1000);
+								break;	
+					}
 				});
+			}
+			function initNextCards(topNext,bottomNext,index)
+			{
+				var countContentDiv=countContentDivList[index];
+				$(topNext).empty().append(countContentDiv);
+				$(bottomNext).empty().append($(countContentDiv).clone(true));	
+			}
+			function swapCards(bottomNext,bottomCurrent,topCurrent,topNext)
+			{
+				showCardList.buttom=bottomNext;
+				hiddenCardList.buttom=bottomCurrent;
+				hiddenCardList.top=topCurrent;
+				showCardList.top=topNext;
 			}
 		</script>
 	</head>

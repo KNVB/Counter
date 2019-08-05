@@ -178,11 +178,7 @@
 							$(topNext).removeClass("rotate_90to0").removeClass("transform0to_90");
 							bottomNext.style.zIndex=4;
 							
-							showCardList.buttom=bottomNext;
-							hiddenCardList.buttom=bottomCurrent;
-							hiddenCardList.top=topCurrent;
-							showCardList.top=topNext;
-							
+							swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
 							resolve(true);
 						},transitionDuration*1000);
 					},transitionDuration*1000);
@@ -221,14 +217,18 @@
 							$(topCurrent).removeClass("rotate0to_90");
 							$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
 							
-							showCardList.buttom=bottomNext;
-							hiddenCardList.buttom=bottomCurrent;
-							hiddenCardList.top=topCurrent;
-							showCardList.top=topNext;
+							swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
 							resolve(true);
 						},transitionDuration*1000);
 					},transitionDuration*1000);
 				});
+			}
+			function swapCards(bottomNext,bottomCurrent,topCurrent,topNext)
+			{
+				showCardList.buttom=bottomNext;
+				hiddenCardList.buttom=bottomCurrent;
+				hiddenCardList.top=topCurrent;
+				showCardList.top=topNext;
 			}
 		</script>
 	</head>
