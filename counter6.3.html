@@ -2,7 +2,7 @@
 	<head>
 		<meta charset="utf-8">
 		<style>
-			.container
+			.digit
 			{
 				width:100px;
 				height:150px;
@@ -131,7 +131,7 @@
 				hiddenCardList.top=document.getElementById("top_next");
 				hiddenCardList.buttom=document.getElementById("bottom_next");
 				
-				/*
+				
 				for (var i=0;i<10;i++)
 				{
 					var countContentDiv=document.createElement("div");
@@ -139,33 +139,35 @@
 					countContentDiv.textContent=i;
 					countContentDivList.push(countContentDiv);
 				}
-				*/
+				/*
 				for (var i=0;i<10;i++)
 				{
 					var img=document.createElement("img");
 					img.src="img/"+i+"_100.png";
 					countContentDivList.push(img);
-				}
+				}*/
 				$(showCardList.top).append(countContentDivList[0]);
 				$(showCardList.buttom).append($(countContentDivList[0]).clone(true));
 			});
 			function add(theButton)
 			{
 				theButton.disabled=true;
+				var box=document.getElementById("add");
 				var startDate=(new Date()).getTime();
 				updateCount("+").then(function(){
 					var endDate=(new Date()).getTime();
-					alert(endDate-startDate);
+					box.value=(endDate-startDate);
 					theButton.disabled=false;
 				});
 			}
 			function minus(theButton)
 			{
 				theButton.disabled=true;
+				var box=document.getElementById("minus");
 				var startDate=(new Date()).getTime();
 				updateCount("-").then(function(){
 					var endDate=(new Date()).getTime();
-					alert(endDate-startDate);
+					box.value=(endDate-startDate);
 					theButton.disabled=false;
 				});
 			}
@@ -242,14 +244,30 @@
 		</script>
 	</head>
 	<body>
-		<div class="container">
+		<div class="digit">
 			<div id="bottom_next" class="fullCard"></div>
 			<div id="bottom_current" class="fullCard"></div>
 			<div id="top_next" class="halfCard"></div>
 			<div id="top_current" class="halfCard"></div>
 		</div>
-		<br>		
-		<button onclick="add(this)">+</button>
-		<button onclick="minus(this)">-</button>
+		<br>
+		<table>
+			<tr>
+				<td>
+					<button onclick="add(this)">+</button>
+				</td>
+				<td>	
+					<button onclick="minus(this)">-</button>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="text" readonly id="add">
+				</td>
+				<td>	
+					<input type="text" readonly id="minus">
+				</td>
+			</tr>			
+		</table>	
 	</body>
 </html>	
