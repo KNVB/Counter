@@ -1,0 +1,255 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.container
+			{
+				width:100px;
+				height:150px;
+				box-sizing: border-box;
+				position:relative;
+				transform-style: preserve-3d;
+			}
+			.halfCard
+			{
+				clip-path:polygon(0% 0%,100% 0%,100% 50%,0% 50%);
+			}
+			.halfCard,			
+			.fullCard
+			{
+				height: 100%;
+				border-radius: 15px;
+				position:absolute;
+				background-color: black;
+				padding: 0px;
+				width: 100%;
+				margin: 0px;
+				display:flex;
+				text-align:center;
+				vertical-align:middle;
+				justify-content: center;
+				align-items: center;
+				box-sizing: border-box;
+				
+			}
+			.fullCard::after
+			{
+				content: " ";
+				display: block;
+				position: absolute;
+				height: 3px;
+				background-color: black;
+				width: 100%;
+				top: 50%;
+			}
+			.countContentDiv
+			{
+				line-height: 150px;
+				color: white;
+				font-weight: bold;
+				font-family:arial;
+				font-size: 5.5em;
+				text-align: center;
+			}
+			.rotate0to90
+			{
+				animation-name: r0to90;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r0to90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(90deg);}
+			}
+			.rotate90to0
+			{
+				animation-name: r90to0;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r90to0
+			{
+				from {transform: rotateX(90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			.rotate0to_90
+			{
+				animation-name: r0to_90;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r0to_90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(-90deg);}
+			}
+			.rotate_90to0
+			{
+				animation-name: r_90to0;
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r_90to0
+			{
+				from {transform: rotateX(-90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			.transform0to_90
+			{
+				transform: rotateX(-90deg);
+			}
+			.transform0to90
+			{
+				transform: rotateX(90deg);
+			}
+			#bottom_current
+			{
+				z-index:2;
+			}
+			#top_current
+			{
+				z-index:4;
+			}
+			#bottom_next,
+			#top_next
+			{
+				z-index:1;
+			}			
+		</style>
+				<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+		<script>
+			var showCardList={};
+			var hiddenCardList={};
+			var transitionDuration=0.4;
+			var step=1,currentIndex=0;
+			var countContentDivList=[];
+			$(document).ready(function(){
+				
+				showCardList.top=document.getElementById("top_current");
+				showCardList.buttom=document.getElementById("bottom_current");
+				hiddenCardList.top=document.getElementById("top_next");
+				hiddenCardList.buttom=document.getElementById("bottom_next");
+				
+				/*
+				for (var i=0;i<10;i++)
+				{
+					var countContentDiv=document.createElement("div");
+					countContentDiv.className="countContentDiv";
+					countContentDiv.textContent=i;
+					countContentDivList.push(countContentDiv);
+				}
+				*/
+				for (var i=0;i<10;i++)
+				{
+					var img=document.createElement("img");
+					img.src="img/"+i+"_100.png";
+					countContentDivList.push(img);
+				}
+				$(showCardList.top).append(countContentDivList[0]);
+				$(showCardList.buttom).append($(countContentDivList[0]).clone(true));
+			});
+			function add(theButton)
+			{
+				theButton.disabled=true;
+				var startDate=(new Date()).getTime();
+				updateCount("+").then(function(){
+					var endDate=(new Date()).getTime();
+					alert(endDate-startDate);
+					theButton.disabled=false;
+				});
+			}
+			function minus(theButton)
+			{
+				theButton.disabled=true;
+				var startDate=(new Date()).getTime();
+				updateCount("-").then(function(){
+					var endDate=(new Date()).getTime();
+					alert(endDate-startDate);
+					theButton.disabled=false;
+				});
+			}
+			function updateCount(flag)
+			{
+				return new Promise(function(resolve, reject) {
+					var bottomNext=hiddenCardList.buttom;
+					var bottomCurrent=showCardList.buttom;
+					var topCurrent=showCardList.top;
+					var topNext=hiddenCardList.top;
+					eval("currentIndex"+flag+"="+step);
+					if (currentIndex<0)
+						currentIndex=countContentDivList.length-1;
+					else
+					{
+						if (currentIndex>=countContentDivList.length)
+							currentIndex=0;
+					}
+					initNextCards(topNext,bottomNext,currentIndex);
+					switch (flag)
+					{
+						case "+":
+								topNext.style.zIndex=3;
+								$(bottomNext).addClass("transform0to90");
+								$(topCurrent).addClass("rotate0to_90");
+								setTimeout(() => {
+									bottomCurrent.style.zIndex=1;
+									bottomNext.style.zIndex=2;
+									$(bottomNext).addClass("rotate90to0");
+									setTimeout(() => {
+										topNext.style.zIndex=4;
+										topCurrent.style.zIndex=1;
+										$(topCurrent).removeClass("rotate0to_90");
+										$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
+										swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
+										resolve(true);
+									},transitionDuration*1000);
+								},transitionDuration*1000);
+								break;
+						case "-":
+								topCurrent.style.zIndex=3;
+								$(topNext).addClass("transform0to_90");
+								$(bottomCurrent).addClass("rotate0to90");
+								setTimeout(() => {
+									topNext.style.zIndex=4;
+									$(topNext).addClass("rotate_90to0");
+									setTimeout(() => {
+										topCurrent.style.zIndex=1;
+										bottomCurrent.style.zIndex=1;
+										$(bottomCurrent).removeClass("rotate0to90");
+										$(topNext).removeClass("rotate_90to0").removeClass("transform0to_90");
+										bottomNext.style.zIndex=2;
+										swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
+										resolve(true);
+									},transitionDuration*1000);
+								},transitionDuration*1000);
+								break;	
+					}
+				});
+			}
+			function initNextCards(topNext,bottomNext,index)
+			{
+				var countContentDiv=countContentDivList[index];
+				$(topNext).empty().append(countContentDiv);
+				$(bottomNext).empty().append($(countContentDiv).clone(true));	
+			}
+			function swapCards(bottomNext,bottomCurrent,topCurrent,topNext)
+			{
+				showCardList.buttom=bottomNext;
+				hiddenCardList.buttom=bottomCurrent;
+				hiddenCardList.top=topCurrent;
+				showCardList.top=topNext;
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div id="bottom_next" class="fullCard"></div>
+			<div id="bottom_current" class="fullCard"></div>
+			<div id="top_next" class="halfCard"></div>
+			<div id="top_current" class="halfCard"></div>
+		</div>
+		<br>		
+		<button onclick="add(this)">+</button>
+		<button onclick="minus(this)">-</button>
+	</body>
+</html>	

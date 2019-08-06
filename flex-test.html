@@ -1,0 +1,91 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.container
+			{
+				width:100px;
+				height:150px;
+				box-sizing: border-box;
+				position:relative;
+				transform-style: preserve-3d;
+			}
+			.halfCard
+			{
+				border-radius: 15px;
+				position:absolute;
+				background-color: black;
+				padding: 0px;
+				width: 100%;
+				margin: 0px;
+				display:flex;
+				text-align:center;
+				vertical-align:middle;
+				justify-content: center;
+				align-items: center;
+				height:100%;
+				box-sizing: border-box;
+				clip-path:polygon(0% 0%,100% 0%,100% 50%,0% 50%);
+			}			
+			.fullCard
+			{
+				height: 100%;
+				border-radius: 15px;
+				position:absolute;
+				background-color: black;
+				padding: 0px;
+				width: 100%;
+				margin: 0px;
+				display:flex;
+				text-align:center;
+				vertical-align:middle;
+				justify-content: center;
+				align-items: center;
+				box-sizing: border-box;
+			}
+			.fullCard::after
+			{
+				content: " ";
+				display: block;
+				position: absolute;
+				height: 5px;
+				background: black;
+				width: 100%;
+				top: 50%;
+			}
+			.countContentDiv
+			{
+				line-height: 150px;
+				color: white;
+				font-weight: bold;
+				font-family:arial;
+				font-size: 5.5em;
+				text-align: center;
+			}		
+		</style>
+	</head>
+	<body>
+		<div style="display:flex;flex-direction:row">
+			<div class="container">
+				<div class="fullCard">
+					<img src="img/0_100.png">
+				</div>
+			</div>	
+			<div class="container">	
+				<div class="fullCard">
+					<div class="countContentDiv">G</div>
+				</div>
+			</div>
+			<div class="container">	
+				<div class="halfCard">
+					<div class="countContentDiv">A</div>
+				</div>
+			</div>
+			<div class="container">	
+				<div class="halfCard">
+					<img src="img/1_100.png">
+				</div>
+			</div>
+		</div>	
+	</body>
+</html>	
