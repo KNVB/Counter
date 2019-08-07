@@ -1,0 +1,23 @@
+var tempValue,startValue,endValue;
+var endCount=1013,startCount=999,digitCount;
+var lowValueEnd=document.getElementById("lowValueEnd");
+var lowValueStart=document.getElementById("lowValueStart");
+
+var highValueEnd=document.getElementById("highValueEnd");
+var highValueStart=document.getElementById("highValueStart");
+tempValue=startCount;
+digitCount=Math.floor(Math.log10(tempValue));
+endValue=tempValue%10;
+tempValue=(tempValue-endValue)/Math.pow(10,digitCount);
+tempValue=Math.floor(tempValue);
+lowValueEnd.textContent=endValue;
+lowValueStart.textContent=tempValue;
+
+
+tempValue=endCount;
+digitCount=Math.floor(Math.log10(tempValue));
+endValue=tempValue%10;
+tempValue=(tempValue-endValue)/Math.pow(10,digitCount);
+tempValue=Math.floor(tempValue);
+highValueEnd.textContent=endValue;
+highValueStart.textContent=tempValue;

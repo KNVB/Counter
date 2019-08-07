@@ -256,27 +256,25 @@
 				digit.endIndex=7
 				
 				/*
-				for (var i=0;i<10;i++)
+				for (var i=digit.startIndex;i<=digit.endIndex;i++)
 				{
 					var countContentDiv=document.createElement("div");
 					countContentDiv.className="countContentDiv";
 					countContentDiv.textContent=count[i];
-					digit.countObjList.push(countContentDiv);
-				}
-								
-				for (var i=0;i<10;i++)
+					digit.countObjList[i]=countContentDiv;
+				}								
+				for (var i=digit.startIndex;i<=digit.endIndex;i++)
 				{
 					var countContentDiv=document.createElement("div");
 					countContentDiv.className="countContentDiv";
 					countContentDiv.textContent=i;
-					digit.countObjList.push(countContentDiv);
-				}
-				*/
-				for (var i=0;i<10;i++)
+					digit.countObjList[i]=countContentDiv;
+				}*/
+				for (var i=digit.startIndex;i<=digit.endIndex;i++)
 				{
 					var img=document.createElement("img");
 					img.src="img/"+i+"_100.png";
-					digit.countObjList.push(img);
+					digit.countObjList[i]=img;
 				}
 				
 				digit.init();
