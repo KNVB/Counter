@@ -1,0 +1,331 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.digit
+			{
+				width:100px;
+				height:150px;
+				box-sizing: border-box;
+				position:relative;
+				transform-style: preserve-3d;
+			}
+			.halfCard
+			{
+				clip-path:polygon(0% 0%,100% 0%,100% 50%,0% 50%);
+			}
+			.halfCard,			
+			.fullCard
+			{
+				height: 100%;
+				border-radius: 15px;
+				position:absolute;
+				background-color: black;
+				padding: 0px;
+				width: 100%;
+				margin: 0px;
+				display:flex;
+				text-align:center;
+				vertical-align:middle;
+				justify-content: center;
+				align-items: center;
+				box-sizing: border-box;
+			}
+			.fullCard::after
+			{
+				content: " ";
+				display: block;
+				position: absolute;
+				height: 3px;
+				background-color: black;
+				width: 100%;
+				top: 50%;
+			}
+			.countContentDiv
+			{
+				line-height: 150px;
+				color: white;
+				font-weight: bold;
+				font-family:Castellar;
+				font-size: 5.5em;
+				text-align: center;
+			}
+			.rotate0to90
+			{
+				animation-name: r0to90;
+			}
+			.rotate90to0
+			{
+				animation-name: r90to0;
+			}
+			.rotate0to_90
+			{
+				animation-name: r0to_90;
+			}
+			.rotate_90to0
+			{
+				animation-name: r_90to0;
+			}
+			.rotate0to90,
+			.rotate90to0,
+			.rotate0to_90,
+			.rotate_90to0
+			{	animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r0to90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(90deg);}
+			}
+			@keyframes r90to0
+			{
+				from {transform: rotateX(90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			@keyframes r0to_90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(-90deg);}
+			}
+			@keyframes r_90to0
+			{
+				from {transform: rotateX(-90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			.transform0to_90
+			{
+				transform: rotateX(-90deg);
+			}
+			.transform0to90
+			{
+				transform: rotateX(90deg);
+			}
+		</style>
+		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+		<script>
+			class Counter
+			{
+				constructor(container)
+				{
+					this.currentIndex=0;
+					this.digitObjList=[];
+					this.endIndex=5;
+					this.startIndex=0;
+					this.wrapper=document.createElement("div");
+					$(container).append(this.wrapper);
+				}
+				init()
+				{
+					var digit=new Digit();
+					this.digitObjList.push(digit);
+					$(this.wrapper).append(digit);
+				}
+			}
+			class Digit extends HTMLDivElement
+			{
+				constructor() 
+				{
+					super();
+					this.countObjList=[];
+					this.showCardList={};
+					this.startIndex=0;
+					this.hiddenCardList={};
+					this.transitionDuration=0.3;
+					
+					this.showCardList.top=document.createElement("div");
+					this.showCardList.buttom=document.createElement("div");
+					this.hiddenCardList.top=document.createElement("div");
+					this.hiddenCardList.buttom=document.createElement("div");
+					
+					this.showCardList.top.zIndex=4;
+					this.showCardList.buttom.zIndex=2;
+					
+					this.hiddenCardList.top.zIndex=1;
+					this.hiddenCardList.buttom.zIndex=1;
+					
+					this.hiddenCardList.buttom.className="fullCard";
+					this.showCardList.buttom.className="fullCard";
+					this.hiddenCardList.top.className="halfCard";
+					this.showCardList.top.className="halfCard";
+					
+					$(this).append(this.hiddenCardList.buttom);
+					$(this).append(this.showCardList.buttom);
+					$(this).append(this.hiddenCardList.top);
+					$(this).append(this.showCardList.top);
+					
+					this.className="digit";
+				}
+				flip(flag)
+				{
+					var self=this;
+					return new Promise(function(resolve, reject) {
+						var bottomNext=self.hiddenCardList.buttom;
+						var bottomCurrent=self.showCardList.buttom;
+						var topCurrent=self.showCardList.top;
+						var topNext=self.hiddenCardList.top;
+					
+						switch (flag)
+						{
+							case "+":
+									topNext.style.zIndex=3;
+									$(bottomNext).addClass("transform0to90");
+									$(topCurrent).addClass("rotate0to_90");
+									setTimeout(() => {
+										bottomCurrent.style.zIndex=1;
+										bottomNext.style.zIndex=2;
+										$(bottomNext).addClass("rotate90to0");
+										setTimeout(() => {
+											topNext.style.zIndex=4;
+											topCurrent.style.zIndex=1;
+											$(topCurrent).removeClass("rotate0to_90");
+											$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
+											self._swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
+											resolve(true);
+										},self.transitionDuration*1000);
+									},self.transitionDuration*1000);
+									break;
+							case "-":
+									topCurrent.style.zIndex=3;
+									$(topNext).addClass("transform0to_90");
+									$(bottomCurrent).addClass("rotate0to90");
+									setTimeout(() => {
+										topNext.style.zIndex=4;
+										$(topNext).addClass("rotate_90to0");
+										setTimeout(() => {
+											topCurrent.style.zIndex=1;
+											bottomCurrent.style.zIndex=1;
+											$(bottomCurrent).removeClass("rotate0to90");
+											$(topNext).removeClass("rotate_90to0").removeClass("transform0to_90");
+											bottomNext.style.zIndex=2;
+											self._swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
+											resolve(true);
+										},self.transitionDuration*1000);
+									},self.transitionDuration*1000);
+									break;	
+						}
+					});
+				}
+				init()
+				{
+					if (this.countObjList.length>0)
+					{
+						$(this.showCardList.top).append(this.countObjList[this.startIndex]);
+						$(this.showCardList.buttom).append($(this.countObjList[this.startIndex]).clone(true));
+					}
+				}
+				setNextCards(index)
+				{
+					var countContentObj=this.countObjList[index];
+					$(this.hiddenCardList.top).empty().append(countContentObj);
+					$(this.hiddenCardList.buttom).empty().append($(countContentObj).clone(true));	
+				}
+				_getStyle(className) 
+				{
+					var classes = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
+					var returnClass;
+					for (var x = 0; x < classes.length; x++) {
+						if (classes[x].selectorText == className) {
+							returnClass=classes[x];
+							console.log(returnClass.style.animationDuration);
+							break;
+						}
+					}
+					return returnClass;
+				}
+				_swapCards(bottomNext,bottomCurrent,topCurrent,topNext)
+				{
+					this.showCardList.buttom=bottomNext;
+					this.hiddenCardList.buttom=bottomCurrent;
+					this.hiddenCardList.top=topCurrent;
+					this.showCardList.top=topNext;
+				}
+			}
+			customElements.define('digit-div',
+				Digit, {
+				extends: 'div'
+			});
+			
+
+			
+			function add(theButton)
+			{
+				theButton.disabled=true;
+				var box=document.getElementById("add");
+				var startDate=(new Date()).getTime();
+				var index=6;
+				digit.setNextCards(index);
+				digit.flip("+").then(function(){
+					var endDate=(new Date()).getTime();
+					box.value=(endDate-startDate);
+					theButton.disabled=false;
+				});
+			}
+			function minus(theButton)
+			{
+				theButton.disabled=true;
+				var box=document.getElementById("minus");
+				var startDate=(new Date()).getTime();
+				var index=6;
+				digit.setNextCards(index);
+				digit.flip("-").then(function(){
+					var endDate=(new Date()).getTime();
+					box.value=(endDate-startDate);
+					theButton.disabled=false;
+				});
+			}
+			$(document).ready(function(){
+				var count=["零","壹","貳","叄","肆","伍","陸","柒","捌","玖"];	
+				var counterContainer=document.getElementById("counterContainer");
+				
+				/*
+				for (var i=digit.startIndex;i<=digit.endIndex;i++)
+				{
+					var countContentDiv=document.createElement("div");
+					countContentDiv.className="countContentDiv";
+					countContentDiv.textContent=count[i];
+					digit.countObjList[i]=countContentDiv;
+				}								
+				for (var i=digit.startIndex;i<=digit.endIndex;i++)
+				{
+					var countContentDiv=document.createElement("div");
+					countContentDiv.className="countContentDiv";
+					countContentDiv.textContent=i;
+					digit.countObjList[i]=countContentDiv;
+				}*/
+				for (var i=0;i<count.length;i++)
+				{
+					var img=document.createElement("img");
+					img.src="img/"+i+"_100.png";
+					digit.countObjList[i]=img;
+				}
+				
+				digit.init();
+				counterContainer.appendChild(digit);
+			});			
+		</script>
+	</head>
+	<body>
+		<div id="counterContainer">
+		</div>	
+		<br>
+		<table>
+			<tr>
+				<td>
+					<button onclick="add(this)">+</button>
+				</td>
+				<td>	
+					<button onclick="minus(this)">-</button>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="text" readonly id="add">
+				</td>
+				<td>	
+					<input type="text" readonly id="minus">
+				</td>
+			</tr>			
+		</table>	
+	</body>
+</html>	
