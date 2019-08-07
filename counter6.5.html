@@ -30,7 +30,6 @@
 				justify-content: center;
 				align-items: center;
 				box-sizing: border-box;
-				
 			}
 			.fullCard::after
 			{
@@ -47,7 +46,7 @@
 				line-height: 150px;
 				color: white;
 				font-weight: bold;
-				font-family:arial;
+				font-family:Castellar;
 				font-size: 5.5em;
 				text-align: center;
 			}
@@ -105,18 +104,20 @@
 		</style>
 		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
 		<script>
-			class Counter
+			class Digit extends HTMLDivElement
 			{
-				constructor(container)
+				constructor() 
 				{
+					super();
 					this.showCardList={};
 					this.hiddenCardList={};
 					this.transitionDuration=0.3;
 					this.step=1;
 					this.currentIndex=0;
+					this.startIndex=0;
+					this.endIndex=9;
 					this.countObjList=[];
 					
-					var wrapper=document.createElement("div");
 					this.showCardList.top=document.createElement("div");
 					this.showCardList.buttom=document.createElement("div");
 					this.hiddenCardList.top=document.createElement("div");
@@ -133,13 +134,12 @@
 					this.hiddenCardList.top.className="halfCard";
 					this.showCardList.top.className="halfCard";
 					
-					$(wrapper).append(this.hiddenCardList.buttom);
-					$(wrapper).append(this.showCardList.buttom);
-					$(wrapper).append(this.hiddenCardList.top);
-					$(wrapper).append(this.showCardList.top);
+					$(this).append(this.hiddenCardList.buttom);
+					$(this).append(this.showCardList.buttom);
+					$(this).append(this.hiddenCardList.top);
+					$(this).append(this.showCardList.top);
 					
-					wrapper.className="digit";
-					$(container).append(wrapper);
+					this.className="digit";
 				}
 				downCount()
 				{
@@ -149,8 +149,9 @@
 				{
 					if (this.countObjList.length>0)
 					{
-						$(this.showCardList.top).append(this.countObjList[0]);
-						$(this.showCardList.buttom).append($(this.countObjList[0]).clone(true));
+						this.currentIndex=this.startIndex;
+						$(this.showCardList.top).append(this.countObjList[this.currentIndex]);
+						$(this.showCardList.buttom).append($(this.countObjList[this.currentIndex]).clone(true));
 					}
 				}
 				upCount()
@@ -192,12 +193,12 @@
 						var topCurrent=self.showCardList.top;
 						var topNext=self.hiddenCardList.top;
 						eval("self.currentIndex"+flag+"="+self.step);
-						if (self.currentIndex<0)
-							self.currentIndex=self.countObjList.length-1;
+						if (self.currentIndex<self.startIndex)
+							self.currentIndex=self.endIndex;
 						else
 						{
-							if (self.currentIndex>=self.countObjList.length)
-								self.currentIndex=0;
+							if (self.currentIndex>self.endIndex)
+								self.currentIndex=self.startIndex;
 						}
 						self._initNextCards(topNext,bottomNext,self.currentIndex);
 						switch (flag)
@@ -242,38 +243,44 @@
 					});
 				}				
 			}
-			
-			var counter;
+			customElements.define('digit-div',
+					Digit, {
+					extends: 'div'
+				});
+			var digit;
 			$(document).ready(function(){
 				var count=["零","壹","貳","叄","肆","伍","陸","柒","捌","玖"];	
-				var counterDiv=document.getElementById("counter");
-				counter=new Counter(counterDiv);
+				var counterDiv=document.getElementById("counterContainer");
+				digit=new Digit();
+				digit.startIndex=5;
+				digit.endIndex=7
+				
 				/*
 				for (var i=0;i<10;i++)
 				{
 					var countContentDiv=document.createElement("div");
 					countContentDiv.className="countContentDiv";
 					countContentDiv.textContent=count[i];
-					counter.countObjList.push(countContentDiv);
+					digit.countObjList.push(countContentDiv);
 				}
-				
+								
 				for (var i=0;i<10;i++)
 				{
 					var countContentDiv=document.createElement("div");
 					countContentDiv.className="countContentDiv";
 					countContentDiv.textContent=i;
-					counter.countObjList.push(countContentDiv);
-				}*/
-				
+					digit.countObjList.push(countContentDiv);
+				}
+				*/
 				for (var i=0;i<10;i++)
 				{
 					var img=document.createElement("img");
 					img.src="img/"+i+"_100.png";
-					counter.countObjList.push(img);
+					digit.countObjList.push(img);
 				}
-			
 				
-				counter.init();
+				digit.init();
+				counterDiv.appendChild(digit);
 			});
 			
 			function add(theButton)
@@ -281,7 +288,7 @@
 				theButton.disabled=true;
 				var box=document.getElementById("add");
 				var startDate=(new Date()).getTime();
-				counter.upCount().then(function(){
+				digit.upCount().then(function(){
 					var endDate=(new Date()).getTime();
 					box.value=(endDate-startDate);
 					theButton.disabled=false;
@@ -292,7 +299,7 @@
 				theButton.disabled=true;
 				var box=document.getElementById("minus");
 				var startDate=(new Date()).getTime();
-				counter.downCount().then(function(){
+				digit.downCount().then(function(){
 					var endDate=(new Date()).getTime();
 					box.value=(endDate-startDate);
 					theButton.disabled=false;
@@ -301,7 +308,7 @@
 		</script>
 	</head>
 	<body>
-		<div id="counter">
+		<div id="counterContainer">
 	
 		</div>	
 		<br>
