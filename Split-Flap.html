@@ -2,13 +2,19 @@
 	<head>
 		<meta charset="utf-8">
 		<style>
-			.digit
+			.splitFlap
+			{
+				display:inline-flex;
+				flex-direction:row-reverse;
+			}
+			.flap
 			{
 				width:100px;
 				height:150px;
 				box-sizing: border-box;
 				position:relative;
 				transform-style: preserve-3d;
+				display:flex;
 			}
 			.halfCard
 			{
@@ -30,7 +36,6 @@
 				justify-content: center;
 				align-items: center;
 				box-sizing: border-box;
-				
 			}
 			.fullCard::after
 			{
@@ -42,12 +47,12 @@
 				width: 100%;
 				top: 50%;
 			}
-			.countContentDiv
+			.countObj
 			{
 				line-height: 150px;
 				color: white;
 				font-weight: bold;
-				font-family:arial;
+				font-family:標楷體;
 				font-size: 5.5em;
 				text-align: center;
 			}
@@ -94,6 +99,10 @@
 				from {transform: rotateX(-90deg);}
 				to {transform: rotateX(0deg);}
 			}
+			.spacer
+			{
+				width:3px;
+			}
 			.transform0to_90
 			{
 				transform: rotateX(-90deg);
@@ -105,22 +114,65 @@
 		</style>
 		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
 		<script>
-			class Counter
+			class SplitFlap
 			{
 				constructor(container)
 				{
+					this.currentIndex=0;
+					this.countObjList={};
+					this.countryList=[];
+					this.currentCount=0;
+					this.digitCount=0;
+					this.flapList=[];
+					
+					this.maxCount=9;
+					this.minCount=0;
+					this.step=1;
+					this.wrapper=document.createElement("div");
+					this.wrapper.className="splitFlap";
+					
+					$(container).append(this.wrapper);
+				}
+				init()
+				{
+					var character;
+					this.countryList.push("香港");
+					this.countryList.push("台灣");
+					this.countryList.push("日本");
+					this.countryList.push("新加玻");
+					this.countryList.push("美國");
+					for (var i=0;i<3;i++)
+					{
+						var flap=new Flap();
+						flap.countObjList=$(this.countObjList);
+						flap.index=this.countryList[0].charAt(i);
+						flap.init();
+						$(this.wrapper).append(flap);
+						$(this.wrapper).append("<div class=\"spacer\"></div>");
+						this.flapList[i]=flap;
+					}
+				}
+			}
+			class Flap extends HTMLDivElement
+			{
+				constructor() 
+				{
+					super();
+					this.countObjList=[];
 					this.showCardList={};
+					this.index=0;
 					this.hiddenCardList={};
 					this.transitionDuration=0.3;
-					this.step=1;
-					this.currentIndex=0;
-					this.countObjList=[];
 					
-					var wrapper=document.createElement("div");
 					this.showCardList.top=document.createElement("div");
 					this.showCardList.buttom=document.createElement("div");
 					this.hiddenCardList.top=document.createElement("div");
 					this.hiddenCardList.buttom=document.createElement("div");
+					
+					this.showCardList.top.id="top_current";
+					this.showCardList.buttom.id="bottom_current";
+					this.hiddenCardList.top.id="top_next";
+					this.hiddenCardList.buttom.id="bottom_next";					
 					
 					this.showCardList.top.style.zIndex=4;
 					this.showCardList.buttom.style.zIndex=2;
@@ -133,57 +185,14 @@
 					this.hiddenCardList.top.className="halfCard";
 					this.showCardList.top.className="halfCard";
 					
-					$(wrapper).append(this.hiddenCardList.buttom);
-					$(wrapper).append(this.showCardList.buttom);
-					$(wrapper).append(this.hiddenCardList.top);
-					$(wrapper).append(this.showCardList.top);
+					$(this).append(this.hiddenCardList.buttom);
+					$(this).append(this.showCardList.buttom);
+					$(this).append(this.hiddenCardList.top);
+					$(this).append(this.showCardList.top);
 					
-					wrapper.className="digit";
-					$(container).append(wrapper);
+					this.className="flap";
 				}
-				downCount()
-				{
-					return this._updateCount("-");
-				}
-				init()
-				{
-					if (this.countObjList.length>0)
-					{
-						$(this.showCardList.top).append(this.countObjList[0]);
-						$(this.showCardList.buttom).append($(this.countObjList[0]).clone(true));
-					}
-				}
-				upCount()
-				{
-					return this._updateCount("+");
-				}
-				_getStyle(className) 
-				{
-					var classes = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
-					var returnClass;
-					for (var x = 0; x < classes.length; x++) {
-						if (classes[x].selectorText == className) {
-							returnClass=classes[x];
-							console.log(returnClass.style.animationDuration);
-							break;
-						}
-					}
-					return returnClass;
-				}
-				_initNextCards(topNext,bottomNext,index)
-				{
-					var countContentDiv=this.countObjList[index];
-					$(topNext).empty().append(countContentDiv);
-					$(bottomNext).empty().append($(countContentDiv).clone(true));	
-				}
-				_swapCards(bottomNext,bottomCurrent,topCurrent,topNext)
-				{
-					this.showCardList.buttom=bottomNext;
-					this.hiddenCardList.buttom=bottomCurrent;
-					this.hiddenCardList.top=topCurrent;
-					this.showCardList.top=topNext;
-				}
-				_updateCount(flag)
+				flip(flag)
 				{
 					var self=this;
 					return new Promise(function(resolve, reject) {
@@ -191,22 +200,14 @@
 						var bottomCurrent=self.showCardList.buttom;
 						var topCurrent=self.showCardList.top;
 						var topNext=self.hiddenCardList.top;
-						eval("self.currentIndex"+flag+"="+self.step);
-						if (self.currentIndex<0)
-							self.currentIndex=self.countObjList.length-1;
-						else
-						{
-							if (self.currentIndex>=self.countObjList.length)
-								self.currentIndex=0;
-						}
-						self._initNextCards(topNext,bottomNext,self.currentIndex);
+						self._initNextCards(topNext,bottomNext);
 						switch (flag)
 						{
 							case "+":
-									topNext.style.zIndex=3;
+									topNext.style.zIndex=2;
 									$(bottomNext).addClass("transform0to90");
-									$(topCurrent).addClass("rotate0to_90");
-									setTimeout(() => {
+									$(topCurrent).addClass("rotate0to_90");									
+									setTimeout(() => {										
 										bottomCurrent.style.zIndex=1;
 										bottomNext.style.zIndex=2;
 										$(bottomNext).addClass("rotate90to0");
@@ -240,69 +241,64 @@
 									break;	
 						}
 					});
-				}				
+				}
+				init()
+				{
+					if (this.countObjList.length>0)
+					{
+						$(this.showCardList.top).append($(this.countObjList[this.index]).clone(true));
+						$(this.showCardList.buttom).append($(this.countObjList[this.index]).clone(true));
+					}
+				}
+				_initNextCards(topNext,bottomNext)
+				{
+					var countContentDiv=this.countObjList[this.index];
+					$(topNext).empty().append($(countContentDiv).clone(true));
+					$(bottomNext).empty().append($(countContentDiv).clone(true));	
+				}
+				_getStyle(className) 
+				{
+					var classes = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
+					var returnClass;
+					for (var x = 0; x < classes.length; x++) {
+						if (classes[x].selectorText == className) {
+							returnClass=classes[x];
+							console.log(returnClass.style.animationDuration);
+							break;
+						}
+					}
+					return returnClass;
+				}
+				_swapCards(bottomNext,bottomCurrent,topCurrent,topNext)
+				{
+					this.showCardList.buttom=bottomNext;
+					this.hiddenCardList.buttom=bottomCurrent;
+					this.hiddenCardList.top=topCurrent;
+					this.showCardList.top=topNext;
+				}
 			}
-			
-			var counter;
-			$(document).ready(function(){
-				var count=["零","壹","貳","叄","肆","伍","陸","柒","捌","玖"];	
-				var counterDiv=document.getElementById("counter");
-				counter=new Counter(counterDiv);
-				/*
-				for (var i=0;i<10;i++)
-				{
-					var countContentDiv=document.createElement("div");
-					countContentDiv.className="countContentDiv";
-					countContentDiv.textContent=count[i];
-					counter.countObjList.push(countContentDiv);
-				}
-				
-				for (var i=0;i<10;i++)
-				{
-					var countContentDiv=document.createElement("div");
-					countContentDiv.className="countContentDiv";
-					countContentDiv.textContent=i;
-					counter.countObjList.push(countContentDiv);
-				}*/
-				
-				for (var i=0;i<10;i++)
-				{
-					var img=document.createElement("img");
-					img.src="img/"+i+"_100.png";
-					counter.countObjList.push(img);
-				}
-			
-				
-				counter.init();
+			customElements.define('flap-div',
+				Flap, {
+				extends: 'div'
 			});
-			
-			function add(theButton)
-			{
-				theButton.disabled=true;
-				var box=document.getElementById("add");
-				var startDate=(new Date()).getTime();
-				counter.upCount().then(function(){
-					var endDate=(new Date()).getTime();
-					box.value=(endDate-startDate);
-					theButton.disabled=false;
-				});
-			}
-			function minus(theButton)
-			{
-				theButton.disabled=true;
-				var box=document.getElementById("minus");
-				var startDate=(new Date()).getTime();
-				counter.downCount().then(function(){
-					var endDate=(new Date()).getTime();
-					box.value=(endDate-startDate);
-					theButton.disabled=false;
-				});
-			}
+			var splitFlap;
+			$(document).ready(function(){
+				var wordList=["香","港","台","灣","日","本","新","加","玻","美","國"];	
+				var counterContainer=document.getElementById("counterContainer");
+				splitFlap=new SplitFlap(counterContainer);
+				for (var i=0;i<wordList.length;i++)
+				{
+					var countObj=document.createElement("div");
+					countObj.className="countObj";
+					countObj.textContent=wordList[i];
+					splitFlap.countObjList[wordList[i]]=countObj;
+				}
+				splitFlap.init();
+			});
 		</script>
 	</head>
 	<body>
-		<div id="counter">
-	
+		<div id="counterContainer">
 		</div>	
 		<br>
 		<table>
@@ -314,14 +310,6 @@
 					<button onclick="minus(this)">-</button>
 				</td>
 			</tr>
-			<tr>
-				<td>
-					<input type="text" readonly id="add">
-				</td>
-				<td>	
-					<input type="text" readonly id="minus">
-				</td>
-			</tr>			
 		</table>	
 	</body>
 </html>	
