@@ -2,10 +2,11 @@
 	<head>
 		<meta charset="utf-8">
 		<style>
+			.clock,
 			.counter
 			{
 				display:inline-flex;
-				flex-direction:row-reverse;
+				flex-direction:row;
 			}
 			.flap
 			{
@@ -49,11 +50,11 @@
 			}
 			.countObj
 			{
-				line-height: 150px;
+				line-height: 100px;
 				color: white;
 				font-weight: bold;
 				font-family:Castellar; /*Megrim*/
-				font-size: 5.5em;
+				font-size: 100px;
 				text-align: center;
 			}
 			.rotate0to90
@@ -99,6 +100,15 @@
 				from {transform: rotateX(-90deg);}
 				to {transform: rotateX(0deg);}
 			}
+			.separator
+			{
+				display: flex;
+				font-weight: bold;
+				font-family:Castellar; /*Megrim*/
+				font-size: 100px;
+				text-align: center;
+				position:relative;
+			}
 			.spacer
 			{
 				width:3px;
@@ -114,6 +124,67 @@
 		</style>
 		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
 		<script>
+			class Clock
+			{
+				constructor(container)
+				{
+					var countObjList=[];
+					this.hourCounter;
+					this.minuteCounter;
+					this.secondCounter;
+					
+					this.wrapper=document.createElement("div");
+					this.wrapper.className="clock";
+					$(container).append(this.wrapper);
+					for (var i=0;i<10;i++)
+					{
+						var countObj=document.createElement("div");
+						countObj.className="countObj";
+						countObj.textContent=i;
+						countObjList.push(countObj);
+					}
+					this.hourCounter=new Counter(this.wrapper);
+					this.hourCounter.minCount=0;
+					this.hourCounter.maxCount=23;
+					this.hourCounter.countObjList=$(countObjList).clone(true);
+					
+					
+					$(this.wrapper).append("<div class=\"separator\">:</div>");
+					this.minuteCounter=new Counter(this.wrapper);
+					this.minuteCounter.minCount=0;
+					this.minuteCounter.maxCount=59;
+					this.minuteCounter.countObjList=$(countObjList).clone(true);
+
+					$(this.wrapper).append("<div class=\"separator\">:</div>");
+					this.secondCounter=new Counter(this.wrapper);
+					this.secondCounter.minCount=0;
+					this.secondCounter.maxCount=59;
+					this.secondCounter.countObjList=$(countObjList).clone(true);
+					
+				}
+				init()
+				{
+					var now=new Date();
+					this.secondCounter.init(now.getSeconds());
+					this.minuteCounter.init(now.getMinutes());
+					this.hourCounter.init(now.getHours());
+				}
+				update()
+				{
+					var self=this;
+					this.secondCounter.upCount().then(function(result){
+						if (result)
+						{
+							self.minuteCounter.upCount().then(function(result){
+								if (result)
+								{
+									self.hourCounter.upCount();
+								}
+							})
+						}
+					});
+				}
+			}
 			class Counter
 			{
 				constructor(container)
@@ -131,22 +202,23 @@
 					
 					$(container).append(this.wrapper);
 				}
-				init()
+				init(initCount)
 				{
 					this.digitCount=Math.floor(Math.log10(this.maxCount))+1;
-					var tempValue=this.minCount;
-					for(var i=0;i<this.digitCount;i++)
+					var tempValue=initCount,result;
+					for(var i=this.digitCount-1;i>=0;i--)
 					{
+						result=Math.floor(tempValue/Math.pow(10,i));
+						tempValue=tempValue-(Math.pow(10,i)*result);
 						var flap=new Flap();
-						flap.index=tempValue%10;
-						tempValue=Math.floor(tempValue/10);
+						flap.index=result;
 						flap.countObjList=$(this.countObjList).clone(true);
 						flap.init();
 						$(this.wrapper).append(flap);
 						$(this.wrapper).append("<div class=\"spacer\"></div>");
 						this.flapList[i]=flap;
 					}
-					this.currentCount=this.minCount;
+					this.currentCount=initCount;
 				}
 				downCount()
 				{
@@ -182,7 +254,10 @@
 							tempValue=Math.floor(tempValue/10);
 						}
 						Promise.all(promiseFunctionList).then(() => {
-							resolve();
+							if (self.currentCount==self.minCount)
+								resolve(true);
+							else
+								resolve(false);
 						});						
 					});
 				}
@@ -196,7 +271,7 @@
 					this.showCardList={};
 					this.index=0;
 					this.hiddenCardList={};
-					this.transitionDuration=0.3;
+					this.transitionDuration=0.4;
 					
 					this.showCardList.top=document.createElement("div");
 					this.showCardList.buttom=document.createElement("div");
@@ -315,89 +390,16 @@
 				Flap, {
 				extends: 'div'
 			});
-			var counter;
-
-			
-			function add(theButton)
-			{
-				theButton.disabled=true;
-				var box=document.getElementById("add");
-				var startDate=(new Date()).getTime();
-				counter.upCount().then(function(){
-					var endDate=(new Date()).getTime();
-					box.value=(endDate-startDate);
-					theButton.disabled=false;
-				});
-			}
-			function minus(theButton)
-			{
-				theButton.disabled=true;
-				var box=document.getElementById("minus");
-				var startDate=(new Date()).getTime();
-				counter.downCount().then(function(){
-					var endDate=(new Date()).getTime();
-					box.value=(endDate-startDate);
-					theButton.disabled=false;
-				});
-			}
 			$(document).ready(function(){
-				var count=["零","壹","貳","叄","肆","伍","陸","柒","捌","玖"];	
-				var counterContainer=document.getElementById("counterContainer");
-				counter=new Counter(counterContainer);
-				counter.minCount=98;
-				counter.maxCount=100;
-				
-				/*
-				for (var i=0;i<=count.length;i++)
-				{
-					var countObj=document.createElement("div");
-					countObj.className="countObj";
-					countObj.style.fontFamily="標楷體";
-					countObj.textContent=count[i];
-					counter.countObjList[i]=countObj;
-				}
-				*/
-				for (var i=0;i<10;i++)
-				{
-					var countObj=document.createElement("div");
-					countObj.className="countObj";
-					countObj.textContent=i;
-					counter.countObjList[i]=countObj;
-				}
-				/*
-				for (var i=0;i<10;i++)
-				{
-					var img=document.createElement("img");
-					img.src="img/"+i+"_100.png";
-					counter.countObjList[i]=img;
-				}
-				*/
-				counter.init();
-				
-			});			
+				var clockContainer=document.getElementById("clockContainer");
+				var clock=new Clock(clockContainer);
+				clock.init();
+				setInterval(function(){ clock.update(); }, 1000);
+			});
 		</script>
 	</head>
 	<body>
-		<div id="counterContainer">
+		<div id="clockContainer">
 		</div>	
-		<br>
-		<table>
-			<tr>
-				<td>
-					<button onclick="add(this)">+</button>
-				</td>
-				<td>	
-					<button onclick="minus(this)">-</button>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input type="text" readonly id="add">
-				</td>
-				<td>	
-					<input type="text" readonly id="minus">
-				</td>
-			</tr>			
-		</table>	
 	</body>
-</html>	
+</html>

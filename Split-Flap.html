@@ -5,12 +5,12 @@
 			.splitFlap
 			{
 				display:inline-flex;
-				flex-direction:row-reverse;
+				flex-direction:row;
 			}
 			.flap
 			{
-				width:100px;
-				height:150px;
+				width:66px;
+				height:100px;
 				box-sizing: border-box;
 				position:relative;
 				transform-style: preserve-3d;
@@ -49,11 +49,12 @@
 			}
 			.countObj
 			{
-				line-height: 150px;
+				line-height: 100px;
 				color: white;
 				font-weight: bold;
 				font-family:標楷體;
-				font-size: 5.5em;
+				//font-size: 4em;
+				font-size: 66px;
 				text-align: center;
 			}
 			.rotate0to90
@@ -76,7 +77,7 @@
 			.rotate90to0,
 			.rotate0to_90,
 			.rotate_90to0
-			{	animation-duration: 0.5s;
+			{	animation-duration: 0.3s;
 				animation-fill-mode: forwards;
 			}
 			@keyframes r0to90
@@ -120,37 +121,403 @@
 				{
 					this.currentIndex=0;
 					this.countObjList={};
-					this.countryList=[];
+					this.cityNameList=[];
 					this.currentCount=0;
 					this.digitCount=0;
 					this.flapList=[];
-					
+					this.maxCityNameLength=0;
 					this.maxCount=9;
 					this.minCount=0;
 					this.step=1;
 					this.wrapper=document.createElement("div");
 					this.wrapper.className="splitFlap";
 					
+					//北亞、東亞
+					this.cityNameList.push("汶萊-斯里巴加萬港");
+					this.cityNameList.push("緬甸-仰光");
+					this.cityNameList.push("柬埔寨-金邊");
+					this.cityNameList.push("中國-北京");
+					this.cityNameList.push("中國-重慶");
+					this.cityNameList.push("中國-上海");
+					this.cityNameList.push("中國-香港");
+					this.cityNameList.push("中國-烏魯木齊");
+					this.cityNameList.push("印尼-耶加達");
+					this.cityNameList.push("日本-東京");
+					this.cityNameList.push("日本-大阪");
+					this.cityNameList.push("日本-札幌");
+					this.cityNameList.push("韓國-漢城");
+					this.cityNameList.push("哈薩克-Almaty");
+					this.cityNameList.push("哈薩克-Aqtau");
+					this.cityNameList.push("哈薩克-Aqtobe");
+					this.cityNameList.push("吉爾吉斯-比斯凱克");
+					this.cityNameList.push("寮國-永珍");
+					this.cityNameList.push("馬來西亞-吉隆坡");
+					this.cityNameList.push("蒙古利亞-烏蘭巴托(庫倫)");
+					this.cityNameList.push("菲律賓-馬尼拉");
+					this.cityNameList.push("俄羅斯-阿那底河");
+					this.cityNameList.push("俄羅斯-堪察加半島");
+					this.cityNameList.push("俄羅斯-馬加丹");
+					this.cityNameList.push("俄羅斯-海參威");
+					this.cityNameList.push("俄羅斯-雅庫次克");
+					this.cityNameList.push("新加坡-新加坡");
+					this.cityNameList.push("台灣-台北");
+					this.cityNameList.push("台灣-高雄");
+					this.cityNameList.push("泰國-曼谷");
+					this.cityNameList.push("越南-河內");
+					
+					//南亞、中亞、西亞
+					this.cityNameList.push("阿富汗-喀布爾");
+					this.cityNameList.push("巴林-麥納瑪");
+					this.cityNameList.push("孟加拉-達卡");
+					this.cityNameList.push("不丹-辛布");
+					this.cityNameList.push("賽普勒斯-尼古西亞");
+					this.cityNameList.push("東帝汶-帝力");
+					this.cityNameList.push("印度-新德里");
+					this.cityNameList.push("印度-孟買");
+					this.cityNameList.push("印度-加爾各答");
+					this.cityNameList.push("伊朗-德黑蘭");
+					this.cityNameList.push("伊拉克-巴格達");
+					this.cityNameList.push("以色列-耶路撒冷");
+					this.cityNameList.push("約旦-安曼");
+					this.cityNameList.push("科威特-科威特市");
+					this.cityNameList.push("黎巴嫩-貝魯特");
+					this.cityNameList.push("馬爾地夫-瑪律");
+					this.cityNameList.push("尼泊爾-加德滿都");
+					this.cityNameList.push("阿曼-馬斯喀特");
+					this.cityNameList.push("巴基斯坦-喀拉蚩");
+					this.cityNameList.push("巴基斯坦-伊斯蘭堡");
+					this.cityNameList.push("巴勒斯坦-耶路撒冷");
+					this.cityNameList.push("卡達-杜哈");
+					this.cityNameList.push("沙烏地阿拉伯-利雅德");
+					this.cityNameList.push("斯里蘭卡-可倫坡");
+					this.cityNameList.push("敘利亞-大馬士革");
+					this.cityNameList.push("塔吉克-杜桑貝");
+					this.cityNameList.push("土耳其-伊斯坦堡");
+					this.cityNameList.push("土庫曼-阿什哈巴德");
+					this.cityNameList.push("阿拉伯聯合大公國-阿布達比");
+					this.cityNameList.push("烏茲別克-塔什干");
+					this.cityNameList.push("葉門-沙那");
+
+					//北歐
+					this.cityNameList.push("丹麥-哥本哈根");
+					this.cityNameList.push("法羅群島(丹麥)-托爾斯港");
+					this.cityNameList.push("芬蘭-赫爾辛基");
+					this.cityNameList.push("冰島-雷克雅未克");
+					this.cityNameList.push("揚馬延島(挪威)-揚馬延島");
+					this.cityNameList.push("挪威-奧斯陸");
+					this.cityNameList.push("斯瓦爾巴群島(挪威)-Longyearbyen");
+					this.cityNameList.push("瑞典-斯德哥爾摩");
+					
+					//中歐、東歐
+					this.cityNameList.push("亞美尼亞-葉里溫");
+					this.cityNameList.push("奧地利-維也納");
+					this.cityNameList.push("亞塞拜然-巴庫");
+					this.cityNameList.push("白俄羅斯-明斯克");
+					this.cityNameList.push("捷克-布拉格");
+					this.cityNameList.push("愛沙尼亞-塔林");
+					this.cityNameList.push("喬治亞-第比利斯");
+					this.cityNameList.push("德國-柏林");
+					this.cityNameList.push("匈牙利-布達佩斯");
+					this.cityNameList.push("拉脫維亞-里加");
+					this.cityNameList.push("列支敦斯登-瓦都茲");
+					this.cityNameList.push("立陶宛-維爾紐斯");
+					this.cityNameList.push("摩爾多瓦-基希涅夫");
+					this.cityNameList.push("波蘭-華沙");
+					this.cityNameList.push("羅馬尼亞-布加勒斯特");
+					this.cityNameList.push("俄羅斯-莫斯科");
+					this.cityNameList.push("俄羅斯-伏爾哥格勒");
+					this.cityNameList.push("斯洛伐克-布拉提斯拉瓦");
+					this.cityNameList.push("瑞士-蘇黎世");
+					this.cityNameList.push("烏克蘭-基輔");
+					this.cityNameList.push("烏克蘭-Simferopol");
+					
+					//西歐
+					this.cityNameList.push("安道爾-安道爾");
+					this.cityNameList.push("比利時-布魯塞爾");
+					this.cityNameList.push("海峽群島(英)-根西島");
+					this.cityNameList.push("海峽群島(英)-澤西島");
+					this.cityNameList.push("法國-巴黎");
+					this.cityNameList.push("直布羅陀(英)-直布羅陀");
+					this.cityNameList.push("愛爾蘭-都柏林");
+					this.cityNameList.push("人島(英)-道格拉斯");
+					this.cityNameList.push("盧森堡-盧森堡市");
+					this.cityNameList.push("摩納哥-摩納哥市");
+					this.cityNameList.push("荷蘭-阿姆斯特丹");
+					this.cityNameList.push("英國-倫敦");
+					this.cityNameList.push("英國-愛丁堡");
+					
+					//南歐
+					this.cityNameList.push("阿爾巴尼亞-地拉那");
+					this.cityNameList.push("波士尼亞-塞拉耶佛");
+					this.cityNameList.push("保加利亞-索菲亞");
+					this.cityNameList.push("克羅埃西亞-札格雷布");
+					this.cityNameList.push("希臘-雅典");
+					this.cityNameList.push("梵蒂岡-梵蒂岡");
+					this.cityNameList.push("義大利-羅馬");
+					this.cityNameList.push("馬其頓-斯高彼亞");
+					this.cityNameList.push("馬爾他-瓦勒他");
+					this.cityNameList.push("葡萄牙-里斯本");
+					this.cityNameList.push("聖馬利諾-聖馬利諾");
+					this.cityNameList.push("斯洛維尼亞-盧布爾雅那");
+					this.cityNameList.push("西班牙-馬德里");
+					this.cityNameList.push("塞爾維亞-貝爾格勒");
+					
+					//北美洲
+					this.cityNameList.push("加拿大-紐芬蘭"); 
+					this.cityNameList.push("加拿大-St. John's, Goose Bay");
+					this.cityNameList.push("加拿大-Pangnirtung"); 
+					this.cityNameList.push("加拿大-Glace Bay");
+					this.cityNameList.push("加拿大-蒙特婁");
+					this.cityNameList.push("加拿大-Swift Current"); 
+					this.cityNameList.push("加拿大-Regina"); 
+					this.cityNameList.push("加拿大-Rainy River");
+					this.cityNameList.push("加拿大-Inuvik"); 
+					this.cityNameList.push("加拿大-Edmonton"); 
+					this.cityNameList.push("加拿大-Dawson Creek");
+					this.cityNameList.push("加拿大-溫哥華");
+					this.cityNameList.push("美國(東岸)-紐約");
+					this.cityNameList.push("美國-印第安納");
+					this.cityNameList.push("美國(中部)-芝加哥");
+					this.cityNameList.push("美國(山區)-丹佛");
+					this.cityNameList.push("美國-亞歷桑那");
+					this.cityNameList.push("美國(西岸)-舊金山/洛杉磯");
+					this.cityNameList.push("美國-朱諾");
+					
+					//中南美洲
+					this.cityNameList.push("安圭拉(英)-瓦利");
+					this.cityNameList.push("安地卡及巴布達-聖約翰");
+					this.cityNameList.push("阿根廷-布宜諾斯艾利斯");
+					this.cityNameList.push("阿魯巴(荷)-奧拉涅斯塔德");
+					this.cityNameList.push("巴哈馬-拿索");
+					this.cityNameList.push("巴貝多-橋鎮");
+					this.cityNameList.push("貝里斯-貝爾墨邦");
+					this.cityNameList.push("百慕達群島(英)-漢密爾頓");
+					this.cityNameList.push("玻利維亞-拉巴斯");
+					this.cityNameList.push("巴西-Porto Acre");
+					this.cityNameList.push("巴西-里約熱內盧");
+					this.cityNameList.push("巴西-巴西利亞");
+					this.cityNameList.push("巴西-Noronha");
+					this.cityNameList.push("巴西-Cuiaba");
+					this.cityNameList.push("維爾京群島(英)-羅德城");
+					this.cityNameList.push("開曼群島(英)-喬治敦");
+					this.cityNameList.push("智利-聖地牙哥");
+					this.cityNameList.push("智利-Hanga Roa");
+					this.cityNameList.push("哥倫比亞-波哥大");
+					this.cityNameList.push("哥斯大黎加-聖約瑟");
+					this.cityNameList.push("古巴-哈瓦那");
+					this.cityNameList.push("多米尼克-羅梭");
+					this.cityNameList.push("多明尼加-聖多明哥");
+					this.cityNameList.push("厄瓜多-基多");
+					this.cityNameList.push("薩爾瓦多-聖薩爾瓦多");
+					this.cityNameList.push("福克蘭群島(英)-史坦利");
+					this.cityNameList.push("格陵蘭(丹麥)-努克");
+					this.cityNameList.push("格瑞那達-聖喬治");
+					this.cityNameList.push("瓜德羅普(法-巴斯特爾");
+					this.cityNameList.push("瓜地馬拉-瓜地馬拉城");
+					this.cityNameList.push("圭亞那(法)-卡宴");
+					this.cityNameList.push("蓋亞那-佐治敦");
+					this.cityNameList.push("海地-太子港");
+					this.cityNameList.push("宏都拉斯-德古斯加巴");
+					this.cityNameList.push("牙買加-京斯敦");
+					this.cityNameList.push("馬提尼克(法)-法蘭西堡");
+					this.cityNameList.push("墨西哥-Mazatlan");
+					this.cityNameList.push("墨西哥-墨西哥城");
+					this.cityNameList.push("墨西哥-蒂娃娜");
+					this.cityNameList.push("蒙特塞拉特(英)-普利茅斯");
+					this.cityNameList.push("安的列斯(荷)-威廉斯塔德");
+					this.cityNameList.push("尼加拉瓜-馬納瓜");
+					this.cityNameList.push("巴拿馬-巴拿馬市");
+					this.cityNameList.push("巴拉圭-亞松森");
+					this.cityNameList.push("祕魯-利馬");
+					this.cityNameList.push("波多黎各(美)-聖胡安");
+					this.cityNameList.push("南喬治和南三明治群島-Grytviken");
+					this.cityNameList.push("聖克里斯多福及尼維斯-巴士地");
+					this.cityNameList.push("聖露西亞-卡斯翠");
+					this.cityNameList.push("聖皮埃爾和密克隆群島(法)-聖皮埃爾市");
+					this.cityNameList.push("聖文森及格瑞那丁-金石城");
+					this.cityNameList.push("蘇利南-巴拉馬利波");
+					this.cityNameList.push("千里達及托巴哥-西班牙港");
+					this.cityNameList.push("特克斯和凱科斯群島(英)-科伯恩城");
+					this.cityNameList.push("烏拉圭-蒙特維多");
+					this.cityNameList.push("委內瑞拉-卡拉卡斯");
+					this.cityNameList.push("維爾京群島(美)-夏洛特.阿馬里");
+					
+					//非洲
+					this.cityNameList.push("阿爾及利亞-阿爾及爾");
+					this.cityNameList.push("安哥拉-魯安達");
+					this.cityNameList.push("貝南-新港");
+					this.cityNameList.push("波札那-嘉伯隆里");
+					this.cityNameList.push("布吉納法索-瓦加杜古");
+					this.cityNameList.push("蒲隆地-布松布拉");
+					this.cityNameList.push("喀麥隆-雅恩德");
+					this.cityNameList.push("加納利群島(西班牙)-喬治城");
+					this.cityNameList.push("維德角島-培亞");
+					this.cityNameList.push("中非共和國-班基");
+					this.cityNameList.push("查德-恩加美納");
+					this.cityNameList.push("葛摩-莫洛尼");
+					this.cityNameList.push("布拉薩剛果-布拉薩市");
+					this.cityNameList.push("金夏沙剛果-金夏沙");
+					this.cityNameList.push("吉布地-吉布地");
+					this.cityNameList.push("埃及-開羅");
+					this.cityNameList.push("赤道幾內亞-馬拉博");
+					this.cityNameList.push("厄利垂亞-阿斯馬拉");
+					this.cityNameList.push("衣索比亞-阿迪斯阿貝巴");
+					this.cityNameList.push("加彭-自由市");
+					this.cityNameList.push("甘比亞-班竹");
+					this.cityNameList.push("迦納-阿克拉");
+					this.cityNameList.push("幾內亞-柯那克里");
+					this.cityNameList.push("幾內亞比索-比索");
+					this.cityNameList.push("象牙海岸-雅穆索戈");
+					this.cityNameList.push("肯亞-奈洛比");
+					this.cityNameList.push("賴索托-馬賽魯");
+					this.cityNameList.push("賴比瑞亞-蒙羅維亞");
+					this.cityNameList.push("利比亞-的黎波里");
+					this.cityNameList.push("馬達加斯加-安塔那那利佛");
+					this.cityNameList.push("馬拉威-里朗威");
+					this.cityNameList.push("馬利-巴馬科");
+					this.cityNameList.push("茅利塔尼亞-諾克少");
+					this.cityNameList.push("模里西斯-路易士港");
+					this.cityNameList.push("馬約特島(法)-Mamoutzou");
+					this.cityNameList.push("摩洛哥-卡薩布蘭卡");
+					this.cityNameList.push("莫三比克-馬布多");
+					this.cityNameList.push("納米比亞-溫吐克");
+					this.cityNameList.push("尼日-尼阿美");
+					this.cityNameList.push("奈及利亞-阿布札");
+					this.cityNameList.push("留尼旺島(法)-聖但尼");
+					this.cityNameList.push("盧安達-吉佳利");
+					this.cityNameList.push("聖赫勒拿(英)-詹姆士城");
+					this.cityNameList.push("聖多美普林西比-聖多美");
+					this.cityNameList.push("塞內加爾-達卡");
+					this.cityNameList.push("塞席爾-維多利亞");
+					this.cityNameList.push("獅子山-自由城");
+					this.cityNameList.push("索馬利亞-摩加迪休");
+					this.cityNameList.push("南非-普利托里亞");
+					this.cityNameList.push("蘇丹-卡土穆");
+					this.cityNameList.push("史瓦濟蘭-墨巴本");
+					this.cityNameList.push("坦尚尼亞-杜篤瑪");
+					this.cityNameList.push("多哥-洛梅");
+					this.cityNameList.push("突尼西亞-突尼斯");
+					this.cityNameList.push("烏干達-坎帕拉");
+					this.cityNameList.push("西撒哈拉-阿尤恩");
+					this.cityNameList.push("尚比亞-路沙卡");
+					this.cityNameList.push("辛巴威-哈拉雷");
+					
+					//大洋洲
+					this.cityNameList.push("美屬薩摩亞(美)-派哥派哥港");
+					this.cityNameList.push("澳大利亞-阿德萊德");
+					this.cityNameList.push("澳大利亞-布利斯班");
+					this.cityNameList.push("澳大利亞-達爾文");
+					this.cityNameList.push("澳大利亞-荷伯特");
+					this.cityNameList.push("澳大利亞-伯斯");
+					this.cityNameList.push("澳大利亞-雪梨");
+					this.cityNameList.push("庫克群島(紐)-阿瓦魯阿");
+					this.cityNameList.push("斐濟-蘇瓦");
+					this.cityNameList.push("關島-阿加納");
+					this.cityNameList.push("夏威夷(美)-檀香山");
+					this.cityNameList.push("吉里巴斯-塔拉瓦");
+					this.cityNameList.push("馬紹爾群島-Majuro");
+					this.cityNameList.push("密克羅尼西亞-帕利基爾");
+					this.cityNameList.push("中途島(美)-中途島");
+					this.cityNameList.push("諾魯共和國-雅連");
+					this.cityNameList.push("新克里多尼亞(法)-Noumea");
+					this.cityNameList.push("新幾內亞-莫勒斯比港");
+					this.cityNameList.push("紐西蘭-奧克蘭");
+					this.cityNameList.push("紐西蘭-Waitaing");
+					this.cityNameList.push("紐埃(紐)-阿洛菲");
+					this.cityNameList.push("北馬里亞納群島(美)-塞班島");
+					this.cityNameList.push("帛琉-柯洛");
+					this.cityNameList.push("巴布亞紐幾內亞-莫爾斯貝港");
+					this.cityNameList.push("皮特凱恩群島(英)-亞當斯敦");
+					this.cityNameList.push("波利尼西亞(法)-巴比蒂");
+					this.cityNameList.push("波利尼西亞(法)-大溪地");
+					this.cityNameList.push("索羅門群島-荷尼阿拉");
+					this.cityNameList.push("托克勞(紐)-努庫塔努");
+					this.cityNameList.push("東加-努瓜婁發");
+					this.cityNameList.push("吐瓦魯-富那富提");
+					this.cityNameList.push("萬那杜-維拉港");
+					this.cityNameList.push("西薩摩亞-阿庇亞");					
+					this.maxCount=this.cityNameList.length-1;
 					$(container).append(this.wrapper);
 				}
 				init()
 				{
-					var character;
-					this.countryList.push("香港");
-					this.countryList.push("台灣");
-					this.countryList.push("日本");
-					this.countryList.push("新加玻");
-					this.countryList.push("美國");
-					for (var i=0;i<3;i++)
+					var character,cityName;
+					var self=this,j;
+					this.cityNameList.forEach(function(cityName){
+						if (cityName.length>self.maxCityNameLength)
+							self.maxCityNameLength=cityName.length;
+						for (var i=0;i<cityName.length;i++)
+						{
+							if (self.countObjList[cityName.charAt(i)]==null)
+							{
+								var countObj=document.createElement("div");
+								countObj.className="countObj";
+								countObj.textContent=cityName.charAt(i);
+								self.countObjList[cityName.charAt(i)]=countObj;
+							}
+						}
+					});
+					//console.log(Object.keys(self.countObjList).length,maxCityNameLength);
+					for(var i=0;i<this.maxCityNameLength;i++)
 					{
 						var flap=new Flap();
-						flap.countObjList=$(this.countObjList);
-						flap.index=this.countryList[0].charAt(i);
-						flap.init();
+						flap.countObjList=this.countObjList;
 						$(this.wrapper).append(flap);
 						$(this.wrapper).append("<div class=\"spacer\"></div>");
 						this.flapList[i]=flap;
 					}
+					cityName=this.cityNameList[0];
+					j=this.maxCityNameLength-1;
+					for (var i=cityName.length-1;i>=0;i--)
+					{
+						var flap=this.flapList[j--];
+						flap.index=cityName.charAt(i);
+						flap.init();
+					}
+				}
+				downCount()
+				{
+					this.currentCount-=this.step;
+					if (this.currentCount<this.minCount)
+						this.currentCount=this.maxCount;
+					return this._flip("-");		
+				}
+				upCount()
+				{
+					this.currentCount+=this.step;
+					if (this.currentCount>this.maxCount)
+						this.currentCount=this.minCount;
+					return this._flip("+");					
+				}
+				nextCity()
+				{
+					this.currentCount=Math.floor(Math.random()*(this.cityNameList.length));
+					return this._flip("+");
+				}
+				_flip(flag)
+				{
+					var self=this;
+					return new Promise(function(resolve, reject) {
+						var cityName=self.cityNameList[self.currentCount];
+						var flap,i,j=self.maxCityNameLength-1;
+						var promiseFunctionList=[];
+						
+						for (i=cityName.length-1;i>=0;i--)
+						{
+							var flap=self.flapList[j--];
+							flap.index=cityName.charAt(i);
+							promiseFunctionList.push(flap.flip(flag));
+						}
+						for (i=j;i>=0;i--)
+						{
+							var flap=self.flapList[i];
+							flap.index=0;
+							promiseFunctionList.push(flap.flip(flag));
+						}
+						Promise.all(promiseFunctionList).then(() => {
+							resolve();
+						});						
+					});
 				}
 			}
 			class Flap extends HTMLDivElement
@@ -162,7 +529,7 @@
 					this.showCardList={};
 					this.index=0;
 					this.hiddenCardList={};
-					this.transitionDuration=0.3;
+					this.transitionDuration=0.18;
 					
 					this.showCardList.top=document.createElement("div");
 					this.showCardList.buttom=document.createElement("div");
@@ -244,7 +611,7 @@
 				}
 				init()
 				{
-					if (this.countObjList.length>0)
+					if (Object.keys(this.countObjList).length>0)
 					{
 						$(this.showCardList.top).append($(this.countObjList[this.index]).clone(true));
 						$(this.showCardList.buttom).append($(this.countObjList[this.index]).clone(true));
@@ -282,23 +649,38 @@
 				extends: 'div'
 			});
 			var splitFlap;
+			function add(theButton)
+			{
+				theButton.disabled=true;
+				var box=document.getElementById("add");
+				var startDate=(new Date()).getTime();
+				splitFlap.upCount().then(function(){
+					var endDate=(new Date()).getTime();
+					box.value=(endDate-startDate);
+					theButton.disabled=false;
+				});
+			}
+			function minus(theButton)
+			{
+				theButton.disabled=true;
+				var box=document.getElementById("minus");
+				var startDate=(new Date()).getTime();
+				splitFlap.downCount().then(function(){
+					var endDate=(new Date()).getTime();
+					box.value=(endDate-startDate);
+					theButton.disabled=false;
+				});
+			}
 			$(document).ready(function(){
-				var wordList=["香","港","台","灣","日","本","新","加","玻","美","國"];	
-				var counterContainer=document.getElementById("counterContainer");
-				splitFlap=new SplitFlap(counterContainer);
-				for (var i=0;i<wordList.length;i++)
-				{
-					var countObj=document.createElement("div");
-					countObj.className="countObj";
-					countObj.textContent=wordList[i];
-					splitFlap.countObjList[wordList[i]]=countObj;
-				}
+				var splitFlapContainer=document.getElementById("splitFlapContainer");
+				splitFlap=new SplitFlap(splitFlapContainer);
 				splitFlap.init();
+				setInterval(function(){ splitFlap.nextCity(); }, 700*0.6);
 			});
 		</script>
 	</head>
 	<body>
-		<div id="counterContainer">
+		<div id="splitFlapContainer">
 		</div>	
 		<br>
 		<table>
@@ -310,6 +692,14 @@
 					<button onclick="minus(this)">-</button>
 				</td>
 			</tr>
+			<tr>
+				<td>
+					<input type="text" readonly id="add">
+				</td>
+				<td>	
+					<input type="text" readonly id="minus">
+				</td>
+			</tr>		
 		</table>	
 	</body>
 </html>	
