@@ -1,0 +1,415 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.clock,
+			.counter
+			{
+				display:inline-flex;
+				flex-direction:row;
+			}
+			.flap
+			{
+				width:100px;
+				height:150px;
+				box-sizing: border-box;
+				position:relative;
+				transform-style: preserve-3d;
+				display:flex;
+			}
+			.halfCard
+			{
+				clip-path:polygon(0% 0%,100% 0%,100% 50%,0% 50%);
+			}
+			.halfCard,			
+			.fullCard
+			{
+				height: 100%;
+				border-radius: 15px;
+				position:absolute;
+				background-color: black;
+				padding: 0px;
+				width: 100%;
+				margin: 0px;
+				display:flex;
+				text-align:center;
+				vertical-align:middle;
+				justify-content: center;
+				align-items: center;
+				box-sizing: border-box;
+			}
+			.fullCard::after
+			{
+				content: " ";
+				display: block;
+				position: absolute;
+				height: 3px;
+				background-color: black;
+				width: 100%;
+				top: 50%;
+			}
+			.countObj
+			{
+				line-height: 100px;
+				color: white;
+				font-weight: bold;
+				font-family:Castellar; /*Megrim*/
+				font-size: 100px;
+				text-align: center;
+			}
+			.rotate0to90
+			{
+				animation-name: r0to90;
+			}
+			.rotate90to0
+			{
+				animation-name: r90to0;
+			}
+			.rotate0to_90
+			{
+				animation-name: r0to_90;
+			}
+			.rotate_90to0
+			{
+				animation-name: r_90to0;
+			}
+			.rotate0to90,
+			.rotate90to0,
+			.rotate0to_90,
+			.rotate_90to0
+			{	animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r0to90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(90deg);}
+			}
+			@keyframes r90to0
+			{
+				from {transform: rotateX(90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			@keyframes r0to_90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(-90deg);}
+			}
+			@keyframes r_90to0
+			{
+				from {transform: rotateX(-90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			.separator
+			{
+				display: flex;
+				font-weight: bold;
+				font-family:Castellar; /*Megrim*/
+				font-size: 100px;
+				text-align: center;
+				position:relative;
+			}
+			.spacer
+			{
+				width:3px;
+			}
+			.transform0to_90
+			{
+				transform: rotateX(-90deg);
+			}
+			.transform0to90
+			{
+				transform: rotateX(90deg);
+			}
+		</style>
+		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+		<script>
+			class Clock
+			{
+				constructor(container)
+				{
+					var countObjList=[];
+					this.hourCounter;
+					this.minuteCounter;
+					this.secondCounter;
+					
+					this.wrapper=document.createElement("div");
+					this.wrapper.className="clock";
+					$(container).append(this.wrapper);
+					for (var i=0;i<10;i++)
+					{
+						/*
+						var countObj=document.createElement("div");
+						countObj.className="countObj";
+						countObj.textContent=i;
+						countObjList.push(countObj);
+						*/
+						
+						var img=document.createElement("img");
+						img.src="img/"+i+".png";
+						countObjList.push(img);
+					}
+					this.hourCounter=new Counter(this.wrapper);
+					this.hourCounter.minCount=0;
+					this.hourCounter.maxCount=23;
+					this.hourCounter.countObjList=$(countObjList).clone(true);
+					
+					
+					$(this.wrapper).append("<div class=\"separator\">:</div>");
+					this.minuteCounter=new Counter(this.wrapper);
+					this.minuteCounter.minCount=0;
+					this.minuteCounter.maxCount=59;
+					this.minuteCounter.countObjList=$(countObjList).clone(true);
+
+					$(this.wrapper).append("<div class=\"separator\">:</div>");
+					this.secondCounter=new Counter(this.wrapper);
+					this.secondCounter.minCount=0;
+					this.secondCounter.maxCount=59;
+					this.secondCounter.countObjList=$(countObjList).clone(true);
+					
+				}
+				init()
+				{
+					var now=new Date();
+					
+					this.secondCounter.init(now.getSeconds());
+					this.minuteCounter.init(now.getMinutes());
+					this.hourCounter.init(now.getHours());
+					/*
+					this.secondCounter.init(55);
+					this.minuteCounter.init(59);
+					this.hourCounter.init(1);
+					*/
+				}
+				async update()
+				{
+					var self=this;
+					let result=await this.secondCounter.upCount();
+					if (result)
+					{
+						result=await this.minuteCounter.upCount();
+						if (result)
+						{
+							this.hourCounter.upCount();
+						}
+					}
+				}
+			}
+			class Counter
+			{
+				constructor(container)
+				{
+					this.countObjList=[];
+					this.currentCount=0;
+					this.digitCount=0;
+					this.flapList=[];
+					
+					this.maxCount=9;
+					this.minCount=0;
+					this.step=1;
+					this.wrapper=document.createElement("div");
+					this.wrapper.className="counter";
+					
+					$(container).append(this.wrapper);
+				}
+				init(initCount)
+				{
+					this.digitCount=Math.floor(Math.log10(this.maxCount))+1;
+					var tempValue=initCount,result;
+					for(var i=this.digitCount-1;i>=0;i--)
+					{
+						result=Math.floor(tempValue/Math.pow(10,i));
+						tempValue=tempValue-(Math.pow(10,i)*result);
+						var flap=new Flap();
+						flap.index=result;
+						flap.countObjList=$(this.countObjList).clone(true);
+						flap.init();
+						$(this.wrapper).append(flap);
+						$(this.wrapper).append("<div class=\"spacer\"></div>");
+						this.flapList[i]=flap;
+					}
+					this.currentCount=initCount;
+				}
+				downCount()
+				{
+					this.currentCount-=this.step;
+					if (this.currentCount<this.minCount)
+						this.currentCount=this.maxCount;
+					return this._flip("-");		
+				}
+				upCount()
+				{
+					this.currentCount+=this.step;
+					if (this.currentCount>this.maxCount)
+						this.currentCount=this.minCount;
+					return this._flip("+");					
+				}
+				_flip(flag)
+				{
+					var self=this;
+					return new Promise(function(resolve, reject) {
+						var digitIndex;
+						var promiseFunctionList=[];
+						var flap;
+						var tempValue=self.currentCount;
+						for(let i=0;i<self.digitCount;i++)
+						{
+							digitIndex=tempValue%10;
+							flap=self.flapList[i];
+							if (flap.index!=digitIndex)
+							{
+								flap.index=digitIndex;
+								promiseFunctionList.push(flap.flip(flag));							
+							}
+							tempValue=Math.floor(tempValue/10);
+						}
+						Promise.all(promiseFunctionList).then(() => {
+							if (self.currentCount==self.minCount)
+								resolve(true);
+							else
+								resolve(false);
+						});						
+					});
+				}
+			}
+			class Flap extends HTMLDivElement
+			{
+				constructor() 
+				{
+					super();
+					this.countObjList=[];
+					this.showCardList={};
+					this.index=0;
+					this.hiddenCardList={};
+					this.transitionDuration=0.4;
+					
+					this.showCardList.top=document.createElement("div");
+					this.showCardList.buttom=document.createElement("div");
+					this.hiddenCardList.top=document.createElement("div");
+					this.hiddenCardList.buttom=document.createElement("div");
+					
+					this.showCardList.top.id="top_current";
+					this.showCardList.buttom.id="bottom_current";
+					this.hiddenCardList.top.id="top_next";
+					this.hiddenCardList.buttom.id="bottom_next";					
+					
+					this.showCardList.top.style.zIndex=4;
+					this.showCardList.buttom.style.zIndex=2;
+					
+					this.hiddenCardList.top.style.zIndex=1;
+					this.hiddenCardList.buttom.style.zIndex=1;
+					
+					this.hiddenCardList.buttom.className="fullCard";
+					this.showCardList.buttom.className="fullCard";
+					this.hiddenCardList.top.className="halfCard";
+					this.showCardList.top.className="halfCard";
+					
+					$(this).append(this.hiddenCardList.buttom);
+					$(this).append(this.showCardList.buttom);
+					$(this).append(this.hiddenCardList.top);
+					$(this).append(this.showCardList.top);
+					
+					this.className="flap";
+				}
+				flip(flag)
+				{
+					var self=this;
+					return new Promise(function(resolve, reject) {
+						var bottomNext=self.hiddenCardList.buttom;
+						var bottomCurrent=self.showCardList.buttom;
+						var topCurrent=self.showCardList.top;
+						var topNext=self.hiddenCardList.top;
+						self._initNextCards(topNext,bottomNext);
+						switch (flag)
+						{
+							case "+":
+									topNext.style.zIndex=2;
+									$(bottomNext).addClass("transform0to90");
+									$(topCurrent).addClass("rotate0to_90");									
+									setTimeout(() => {										
+										bottomCurrent.style.zIndex=1;
+										bottomNext.style.zIndex=2;
+										$(bottomNext).addClass("rotate90to0");
+										setTimeout(() => {
+											topNext.style.zIndex=4;
+											topCurrent.style.zIndex=1;
+											$(topCurrent).removeClass("rotate0to_90");
+											$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
+											self._swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
+											resolve(true);
+										},self.transitionDuration*1000);
+									},self.transitionDuration*1000);
+									break;
+							case "-":
+									topCurrent.style.zIndex=3;
+									$(topNext).addClass("transform0to_90");
+									$(bottomCurrent).addClass("rotate0to90");
+									setTimeout(() => {
+										topNext.style.zIndex=4;
+										$(topNext).addClass("rotate_90to0");
+										setTimeout(() => {
+											topCurrent.style.zIndex=1;
+											bottomCurrent.style.zIndex=1;
+											$(bottomCurrent).removeClass("rotate0to90");
+											$(topNext).removeClass("rotate_90to0").removeClass("transform0to_90");
+											bottomNext.style.zIndex=2;
+											self._swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
+											resolve(true);
+										},self.transitionDuration*1000);
+									},self.transitionDuration*1000);
+									break;	
+						}
+					});
+				}
+				init()
+				{
+					if (this.countObjList.length>0)
+					{
+						$(this.showCardList.top).append($(this.countObjList[this.index]).clone(true));
+						$(this.showCardList.buttom).append($(this.countObjList[this.index]).clone(true));
+					}
+				}
+				_initNextCards(topNext,bottomNext)
+				{
+					var countContentDiv=this.countObjList[this.index];
+					$(topNext).empty().append($(countContentDiv).clone(true));
+					$(bottomNext).empty().append($(countContentDiv).clone(true));	
+				}
+				_getStyle(className) 
+				{
+					var classes = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
+					var returnClass;
+					for (var x = 0; x < classes.length; x++) {
+						if (classes[x].selectorText == className) {
+							returnClass=classes[x];
+							console.log(returnClass.style.animationDuration);
+							break;
+						}
+					}
+					return returnClass;
+				}
+				_swapCards(bottomNext,bottomCurrent,topCurrent,topNext)
+				{
+					this.showCardList.buttom=bottomNext;
+					this.hiddenCardList.buttom=bottomCurrent;
+					this.hiddenCardList.top=topCurrent;
+					this.showCardList.top=topNext;
+				}
+			}
+			customElements.define('flap-div',
+				Flap, {
+				extends: 'div'
+			});
+			$(document).ready(function(){
+				var clockContainer=document.getElementById("clockContainer");
+				var clock=new Clock(clockContainer);
+				clock.init();
+				setInterval(function(){ clock.update(); }, 1000);
+			});
+		</script>
+	</head>
+	<body>
+		<div id="clockContainer">
+		</div>	
+	</body>
+</html>

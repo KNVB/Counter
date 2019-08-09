@@ -1,0 +1,183 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.countObj
+			{
+				line-height: 100px;
+				color: white;
+				font-weight: bold;
+				font-family:Castellar; /*Megrim*/
+				font-size: 100px;
+				text-align: center;
+			}
+			.flap
+			{
+				width:100px;
+				height:150px;
+				box-sizing: border-box;
+				position:relative;
+				transform-style: preserve-3d;
+				display:flex;
+			}
+			.bottomHalfCard
+			{
+				clip-path:polygon(0% 50%,100% 50%,100% 100%,0% 100%);
+			}
+			.fullCard
+			{
+				background-color: blue;
+			}
+			.topHalfCard
+			{
+				clip-path:polygon(0% 0%,100% 0%,100% 50%,0% 50%);
+			}
+			.bottomHalfCard,
+			.topHalfCard,			
+			.fullCard
+			{
+				height: 100%;
+				border-radius: 15px;
+				position:absolute;
+				padding: 0px;
+				width: 100%;
+				margin: 0px;
+				display:flex;
+				text-align:center;
+				vertical-align:middle;
+				justify-content: center;
+				align-items: center;
+				box-sizing: border-box;
+			}
+			.fullCard::after
+			{
+				content: " ";
+				display: block;
+				position: absolute;
+				height: 3px;
+				background-color: black;
+				width: 100%;
+				top: 50%;
+				z-index:10;
+			}
+			.rotate0to90
+			{
+				animation-name: r0to90;
+			}
+			.rotate90to0
+			{
+				animation-name: r90to0;
+			}
+			.rotate0to_90
+			{
+				animation-name: r0to_90;
+			}
+			.rotate_90to0
+			{
+				animation-name: r_90to0;
+			}
+			.rotate0to90,
+			.rotate90to0,
+			.rotate0to_90,
+			.rotate_90to0
+			{	
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r0to90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(90deg);}
+			}
+			@keyframes r90to0
+			{
+				from {transform: rotateX(90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			@keyframes r0to_90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(-90deg);}
+			}
+			@keyframes r_90to0
+			{
+				from {transform: rotateX(-90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			.transform0to_90
+			{
+				transform: rotateX(-90deg);
+			}
+			.transform0to90
+			{
+				transform: rotateX(90deg);
+			}
+		</style>
+		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+		<script>
+			var bottomCurrentCard,bottomNextCard,topCurrentCard,topNextCard;
+			var transitionDuration=0.3;
+			$(document).ready(function(){
+				bottomCurrentCard=document.getElementById("bottomCurrentCard");
+				bottomNextCard=document.getElementById("bottomNextCard");
+				topCurrentCard=document.getElementById("topCurrentCard");
+				topNextCard=document.getElementById("topNextCard");
+				
+				topCurrentCard.style.zIndex=4;
+				bottomCurrentCard.style.zIndex=2;
+				topCurrentCard.style.backgroundColor="green";	
+				bottomCurrentCard.style.backgroundColor="red";
+				
+				topNextCard.style.zIndex=1;
+				bottomNextCard.style.zIndex=1;
+				topNextCard.backgroundColor="blue";	
+				bottomNextCard.backgroundColor="tomato";	
+			});
+			function add(theButton)
+			{
+				topNextCard.style.zIndex=2;
+				$(bottomNextCard).addClass("transform0to90");
+				$(topNextCard).addClass("rotate0to_90");
+				setTimeout(() => {
+					bottomCurrentCard.style.zIndex=1;
+					bottomNextCard.style.zIndex=2;
+					$(bottomNextCard).addClass("rotate90to0");
+				},transitionDuration*1000);
+			}
+		</script>
+	</header>
+	<body>
+		<div class="flap">
+			<div class="topHalfCard" id="topNextCard">
+				<div class="countObj">
+					0
+				</div>
+			</div>
+			<div class="bottomHalfCard" id="bottomNextCard">
+				<div class="countObj">
+					0
+				</div>
+			</div>			
+			<div class="topHalfCard" id="topCurrentCard">
+				<div class="countObj">
+					1
+				</div>
+			</div>
+			<div class="bottomHalfCard" id="bottomCurrentCard">
+				<div class="countObj">
+					1
+				</div>
+			</div>			
+		</div>
+		<table>
+			<tr>
+				<td>
+					<button onclick="add(this)">+</button>
+				</td>
+				<td>	
+					<button onclick="minus(this)">-</button>
+				</td>
+			</tr>
+		</table>	
+	</body>
+</html>	
