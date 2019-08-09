@@ -165,24 +165,28 @@
 				init()
 				{
 					var now=new Date();
+					
 					this.secondCounter.init(now.getSeconds());
 					this.minuteCounter.init(now.getMinutes());
 					this.hourCounter.init(now.getHours());
+					/*
+					this.secondCounter.init(55);
+					this.minuteCounter.init(59);
+					this.hourCounter.init(1);
+					*/
 				}
-				update()
+				async update()
 				{
 					var self=this;
-					this.secondCounter.upCount().then(function(result){
+					let result=await this.secondCounter.upCount();
+					if (result)
+					{
+						result=await this.minuteCounter.upCount();
 						if (result)
 						{
-							self.minuteCounter.upCount().then(function(result){
-								if (result)
-								{
-									self.hourCounter.upCount();
-								}
-							})
+							this.hourCounter.upCount();
 						}
-					});
+					}
 				}
 			}
 			class Counter
