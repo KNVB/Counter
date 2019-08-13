@@ -128,7 +128,7 @@
 			{
 				constructor(container)
 				{
-					var countObjList=[];
+					this.countObjList=[];
 					this.hourCounter;
 					this.minuteCounter;
 					this.secondCounter;
@@ -136,35 +136,30 @@
 					this.wrapper=document.createElement("div");
 					this.wrapper.className="clock";
 					$(container).append(this.wrapper);
-					for (var i=0;i<10;i++)
-					{
-						var countObj=document.createElement("div");
-						countObj.className="countObj";
-						countObj.textContent=i;
-						countObjList.push(countObj);
-					}
+				
 					this.hourCounter=new Counter(this.wrapper);
 					this.hourCounter.minCount=0;
-					this.hourCounter.maxCount=23;
-					this.hourCounter.countObjList=$(countObjList).clone(true);
-					
+					this.hourCounter.maxCount=23;	
 					
 					$(this.wrapper).append("<div class=\"separator\">:</div>");
+					
 					this.minuteCounter=new Counter(this.wrapper);
 					this.minuteCounter.minCount=0;
 					this.minuteCounter.maxCount=59;
-					this.minuteCounter.countObjList=$(countObjList).clone(true);
-
+					
 					$(this.wrapper).append("<div class=\"separator\">:</div>");
+					
 					this.secondCounter=new Counter(this.wrapper);
 					this.secondCounter.minCount=0;
 					this.secondCounter.maxCount=59;
-					this.secondCounter.countObjList=$(countObjList).clone(true);
-					
 				}
 				init()
 				{
 					var now=new Date();
+					
+					this.hourCounter.countObjList=$(this.countObjList).clone(true);
+					this.minuteCounter.countObjList=$(this.countObjList).clone(true);
+					this.secondCounter.countObjList=$(this.countObjList).clone(true);
 					
 					this.secondCounter.init(now.getSeconds());
 					this.minuteCounter.init(now.getMinutes());
@@ -397,6 +392,15 @@
 			$(document).ready(function(){
 				var clockContainer=document.getElementById("clockContainer");
 				var clock=new Clock(clockContainer);
+				
+				for (var i=0;i<10;i++)
+				{
+					var countObj=document.createElement("div");
+					countObj.className="countObj";
+					countObj.textContent=i;
+					clock.countObjList.push(countObj);
+				}
+				
 				clock.init();
 				setInterval(function(){ clock.update(); }, 1000);
 			});
