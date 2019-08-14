@@ -1,0 +1,299 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			body{
+				background-color:#607d8b;
+				padding:0;
+			}
+				
+			.flapContentObj{
+				line-height: 100px;
+				font-weight: bold;
+				font-family:Castellar; /*Megrim*/
+				font-size: 150px;
+				text-align: center;
+			}
+			.flapContiner{
+				animation:rotate 5s linear infinite;
+			}
+			.flap,
+			.flapContiner{
+				width:150px;
+				height:150px;
+				box-sizing: border-box;
+				transform-style: preserve-3d;
+				perspective: 1000px;
+				position:relative;
+			}
+			.flap span{
+				position: absolute;
+				width:100%;
+				height:100%;
+				background:linear-gradient(0deg,#f1f1f1,#bbb,#f1f1f1);
+				border-radius:10px;
+				display:flex;
+				text-align:center;
+				vertical-align:middle;
+				justify-content: center;
+				align-items: center;
+			}	
+			#bottomCurrent
+			{
+				z-index:2;
+			}
+			#topCurrent
+			{
+				z-index:4;
+			}
+			#bottomNext,
+			#topNext
+			{
+				z-index:1;
+			}
+			
+			
+			.halfCard
+			{
+				clip-path:polygon(0% 0%,100% 0%,100% 50%,0% 50%);
+			}
+			.halfCard,			
+			.fullCard
+			{
+				height: 100%;
+				border-radius: 15px;
+				position:absolute;
+				background:linear-gradient(0deg,#f1f1f1,#bbb,#f1f1f1);
+				padding: 0px;
+				width: 100%;
+				margin: 0px;
+				display:flex;
+				text-align:center;
+				vertical-align:middle;
+				justify-content: center;
+				align-items: center;
+				box-sizing: border-box;
+			}
+			.rotate0to90
+			{
+				animation-name: r0to90;
+			}
+			.rotate90to0
+			{
+				animation-name: r90to0;
+			}
+			.rotate0to_90
+			{
+				animation-name: r0to_90;
+			}
+			.rotate_90to0
+			{
+				animation-name: r_90to0;
+			}
+			.rotate0to90,
+			.rotate90to0,
+			.rotate0to_90,
+			.rotate_90to0
+			{	
+				animation-duration: 0.5s;
+				animation-fill-mode: forwards;
+			}
+			@keyframes r0to90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(90deg);}
+			}
+			@keyframes r90to0
+			{
+				from {transform: rotateX(90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			@keyframes r0to_90
+			{
+				from {transform: rotateX(0deg);}
+				to {transform: rotateX(-90deg);}
+			}
+			@keyframes r_90to0
+			{
+				from {transform: rotateX(-90deg);}
+				to {transform: rotateX(0deg);}
+			}
+			@keyframes rotate
+			{
+				0%{
+					transform:perspective(1000px) rotateY(0deg);
+				}
+				100%{
+					transform:perspective(1000px) rotateY(360deg);
+				}
+			}			
+		</style>
+		<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+		<script>
+			var currentIndex=0;
+			
+			class Flap extends HTMLDivElement
+			{
+				constructor() 
+				{
+					super();
+					this.countObjList=[];
+					this.showCardList={};
+					this.index=0;
+					this.hiddenCardList={};
+					this.transitionDuration=0.4;
+					
+					this.showCardList.top=document.createElement("div");
+					this.showCardList.buttom=document.createElement("div");
+					this.hiddenCardList.top=document.createElement("div");
+					this.hiddenCardList.buttom=document.createElement("div");
+					
+					this.showCardList.top.id="topCurrent";
+					this.showCardList.buttom.id="bottomCurrent";
+					this.hiddenCardList.top.id="topNext";
+					this.hiddenCardList.buttom.id="bottomNext";					
+					
+					this.showCardList.top.style.zIndex=4;
+					this.showCardList.buttom.style.zIndex=2;
+					
+					this.hiddenCardList.top.style.zIndex=1;
+					this.hiddenCardList.buttom.style.zIndex=1;
+					
+					this.hiddenCardList.buttom.className="fullCard";
+					this.showCardList.buttom.className="fullCard";
+					this.hiddenCardList.top.className="halfCard";
+					this.showCardList.top.className="halfCard";
+					
+					$(this).append(this.hiddenCardList.buttom);
+					$(this).append(this.showCardList.buttom);
+					$(this).append(this.hiddenCardList.top);
+					$(this).append(this.showCardList.top);
+					
+					this.className="flap";
+				}
+				flip(flag)
+				{
+					var self=this;
+					return new Promise(function(resolve, reject) {
+						var bottomNext=self.hiddenCardList.buttom;
+						var bottomCurrent=self.showCardList.buttom;
+						var topCurrent=self.showCardList.top;
+						var topNext=self.hiddenCardList.top;
+						self._initNextCards(topNext,bottomNext);
+						switch (flag)
+						{
+							case "+":
+									topNext.style.zIndex=2;
+									$(bottomNext).addClass("transform0to90");
+									$(topCurrent).addClass("rotate0to_90");									
+									setTimeout(() => {										
+										bottomCurrent.style.zIndex=1;
+										bottomNext.style.zIndex=2;
+										$(bottomNext).addClass("rotate90to0");
+										setTimeout(() => {
+											topNext.style.zIndex=4;
+											topCurrent.style.zIndex=1;
+											$(topCurrent).removeClass("rotate0to_90");
+											$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
+											self._swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
+											resolve(true);
+										},self.transitionDuration*1000);
+									},self.transitionDuration*1000);
+									break;
+							case "-":
+									topCurrent.style.zIndex=3;
+									$(topNext).addClass("transform0to_90");
+									$(bottomCurrent).addClass("rotate0to90");
+									setTimeout(() => {
+										topNext.style.zIndex=4;
+										$(topNext).addClass("rotate_90to0");
+										setTimeout(() => {
+											topCurrent.style.zIndex=1;
+											bottomCurrent.style.zIndex=1;
+											$(bottomCurrent).removeClass("rotate0to90");
+											$(topNext).removeClass("rotate_90to0").removeClass("transform0to_90");
+											bottomNext.style.zIndex=2;
+											self._swapCards(bottomNext,bottomCurrent,topCurrent,topNext);
+											resolve(true);
+										},self.transitionDuration*1000);
+									},self.transitionDuration*1000);
+									break;	
+						}
+					});
+				}
+				init()
+				{
+					if (this.countObjList.length>0)
+					{
+						$(this.showCardList.top).append($(this.countObjList[this.index]).clone(true));
+						$(this.showCardList.buttom).append($(this.countObjList[this.index]).clone(true));
+					}
+				}
+				_initNextCards(topNext,bottomNext)
+				{
+					var countContentDiv=this.countObjList[this.index];
+					$(topNext).empty().append($(countContentDiv).clone(true));
+					$(bottomNext).empty().append($(countContentDiv).clone(true));	
+				}
+				_getStyle(className) 
+				{
+					var classes = document.styleSheets[0].rules || document.styleSheets[0].cssRules;
+					var returnClass;
+					for (var x = 0; x < classes.length; x++) {
+						if (classes[x].selectorText == className) {
+							returnClass=classes[x];
+							console.log(returnClass.style.animationDuration);
+							break;
+						}
+					}
+					return returnClass;
+				}
+				_swapCards(bottomNext,bottomCurrent,topCurrent,topNext)
+				{
+					this.showCardList.buttom=bottomNext;
+					this.hiddenCardList.buttom=bottomCurrent;
+					this.hiddenCardList.top=topCurrent;
+					this.showCardList.top=topNext;
+				}
+			}
+			customElements.define('flap-div',
+				Flap, {
+				extends: 'div'
+			});
+			var flap=new Flap();
+			$(document).ready(function()
+			{
+				
+				flap.index=currentIndex;
+				
+				for (var i=0;i<10;i++)
+				{
+					var countObj=document.createElement("div");
+					countObj.className="flapContentObj";
+					countObj.textContent=i;
+					flap.countObjList.push(countObj);
+				}		
+				flap.init();
+				$(".flapContiner").append(flap);
+				setInterval(function(){ 
+					if (currentIndex>=(flap.countObjList.length-1))
+					{
+						currentIndex=0;
+					}
+					else
+					{
+						currentIndex++;
+					}
+					flap.index=currentIndex;
+					flap.flip("+");
+				}, 1000);
+			});
+		</script>
+	</head>
+	<body>
+		<div class="flapContiner">
+		</div>
+		<br>
+		<button onclick="start()">Start</button>
+	</body>
+</html>	
