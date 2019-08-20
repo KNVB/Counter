@@ -87,16 +87,16 @@
 			{
 				transform: rotateX(90deg);
 			}
-			#bottom_current
+			#bottomCurrent
 			{
 				z-index:2;
 			}
-			#top_current
+			#topCurrent
 			{
 				z-index:4;
 			}
-			#bottom_next,
-			#top_next
+			#bottomNext,
+			#topNext
 			{
 				z-index:1;
 			}
@@ -105,22 +105,29 @@
 		<script>
 			function start(theButton)
 			{
-				var bottomNext=document.getElementById("bottom_next");
-				var bottomCurrent=document.getElementById("bottom_current");
-				var topCurrent=document.getElementById("top_current");
-				var topNext=document.getElementById("top_next");
+				var bottomNext=document.getElementById("bottomNext");
+				var bottomCurrent=document.getElementById("bottomCurrent");
+				var topCurrent=document.getElementById("topCurrent");
+				var topNext=document.getElementById("topNext");
 				var transitionDuration=0.4;
 				
 				theButton.disabled=true;
+				
 				$(bottomNext).addClass("transform0to90");
 				topNext.style.zIndex=3;
+				var d0=new Date();
+				console.log("0 "+d0.getSeconds()+"."+d0.getMilliseconds());
 				$(topCurrent).addClass("rotate0to_90");
 				setTimeout(() => {
+					var d1=new Date();
+					console.log("1 "+d1.getSeconds()+"."+d1.getMilliseconds());
 					topNext.style.zIndex=4;
 					bottomCurrent.style.zIndex=1;
 					bottomNext.style.zIndex=2;
 					$(bottomNext).addClass("rotate90to0");
 					setTimeout(() => {
+						var d2=new Date();
+						console.log("2 "+d2.getSeconds()+"."+d2.getMilliseconds());
 						topCurrent.style.zIndex=1;
 						$(topCurrent).removeClass("rotate0to_90");
 						$(bottomNext).removeClass("rotate90to0").removeClass("transform0to90");
@@ -132,16 +139,16 @@
 	</head>
 	<body>
 		<div class="container">
-			<div id="bottom_next" class="fullCard">
+			<div id="bottomNext" class="fullCard">
 				2
 			</div>
-			<div id="bottom_current" class="fullCard">
+			<div id="bottomCurrent" class="fullCard">
 				1
 			</div>				
-			<div id="top_next" class="halfCard">
+			<div id="topNext" class="halfCard">
 				2
 			</div>
-			<div id="top_current" class="halfCard">
+			<div id="topCurrent" class="halfCard">
 				1
 			</div>
 		</div>
