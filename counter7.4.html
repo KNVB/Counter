@@ -1,0 +1,215 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.lowerHalfCard,
+			.upperHalfCard {
+			  box-sizing: border-box;
+			  border-radius: 10px;
+			  color: white;
+			  font-weight: bold;
+			  font-family: arial;
+			  font-size: 5.5em;
+			  line-height: 150px;
+			  text-align: center;
+			  height: 100%;
+			  width: 100%;
+			  position: absolute;
+			}
+			
+			.lowerHalfCard {
+			  clip-path: polygon(0% 51%, 100% 51%, 100% 100%, 0% 100%);
+			}
+
+			.upperHalfCard {
+			  clip-path: polygon(0% 0%, 100% 0%, 100% 49%, 0% 49%);
+			}
+
+			.middle {
+			  height: 2px;
+			  width: 100%;
+			  top: calc(50% - 1px);
+			  position: absolute;
+			  background-color: white;
+			}
+
+			.splitFlap {
+			  width: 100px;
+			  height: 150px;
+			  box-sizing: border-box;
+			  position: relative;
+			  transform-style: preserve-3d;
+			}
+
+			.rotate0to90 {
+			  animation-name: r0to90;
+			  animation-duration: 0.5s;
+			  animation-fill-mode: forwards;
+			}
+
+			@keyframes r0to90 {
+			  from {
+				transform: rotateX(0deg);
+			  }
+
+			  to {
+				transform: rotateX(90deg);
+			  }
+			}
+
+			.rotate0to_90 {
+			  animation-name: r0to_90;
+			  animation-duration: 0.5s;
+			  animation-fill-mode: forwards;
+			}
+
+			@keyframes r0to_90 {
+			  from {
+				transform: rotateX(0deg);
+			  }
+
+			  to {
+				transform: rotateX(-90deg);
+			  }
+			}
+
+			.rotate90to0 {
+			  animation-name: r90to0;
+			  animation-duration: 0.5s;
+			  animation-fill-mode: forwards;
+			}
+
+			@keyframes r90to0 {
+			  from {
+				transform: rotateX(90deg);
+			  }
+
+			  to {
+				transform: rotateX(0deg);
+			  }
+			}
+
+			.rotate_90to0 {
+			  animation-name: r_90to0;
+			  animation-duration: 0.5s;
+			  animation-fill-mode: forwards;
+			}
+
+			@keyframes r_90to0 {
+			  from {
+				transform: rotateX(-90deg);
+			  }
+
+			  to {
+				transform: rotateX(0deg);
+			  }
+			}
+
+			.transform0to_90 {
+			  transform: rotateX(-90deg);
+			}
+
+			.transform0to90 {
+			  transform: rotateX(90deg);
+			}
+
+			.zIndex2 {
+			  z-index: 2
+			}
+
+			.zIndex4 {
+			  z-index: 4
+			}
+
+			.zIndex10 {
+			  z-index: 10
+			}
+			.flapBackGroundColor{
+				background-color: black;
+			}
+
+			
+			.hide {
+			  display: none;
+			}
+		</style>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			let groundDiv, firstDiv, secondDiv, thirdDiv;
+			$(document).ready(() => {
+			  groundDiv = document.getElementById("ground");
+			  firstDiv = document.getElementById("1st");
+			  secondDiv = document.getElementById("2nd");
+			  thirdDiv = document.getElementById("3rd");
+			});
+
+			function backward() {
+			  $(thirdDiv).on("animationend", () => {
+				$(firstDiv).on("animationend", () => {
+				  resumeInitialState();
+				});
+				secondDiv.classList.replace("zIndex4", "zIndex2");
+				firstDiv.classList.replace("hide","zIndex4");
+				firstDiv.classList.add("upperHalfCard"); 
+				firstDiv.classList.add("rotate_90to0");
+			  });
+			  firstDiv.classList.add("flapBackGroundColor");
+			  firstDiv.classList.add("transform0to_90");
+			  groundDiv.classList.add("lowerHalfCard");
+			  groundDiv.classList.replace("hide","zIndex2");	
+			  thirdDiv.classList.add("rotate0to90");
+			}
+
+			function forward() {
+			  $(secondDiv).on("animationend", () => {
+				$(firstDiv).on("animationend", () => {
+				  resumeInitialState();
+				});
+				
+				thirdDiv.classList.replace("zIndex4", "zIndex2");
+				firstDiv.classList.replace("hide","zIndex4");
+				firstDiv.classList.add("lowerHalfCard"); 
+				firstDiv.classList.add("rotate90to0");
+			  });
+			  firstDiv.classList.add("transform0to90");
+			  firstDiv.classList.add("flapBackGroundColor");
+			  groundDiv.classList.add("upperHalfCard");
+			  groundDiv.classList.replace("hide","zIndex2");			  
+			  secondDiv.classList.add("rotate0to_90");
+			}
+
+			function resumeInitialState() {
+			  secondDiv.classList.add("hide");
+			  thirdDiv.classList.add("hide");
+			  secondDiv.innerHTML = firstDiv.innerHTML;
+			  thirdDiv.innerHTML = firstDiv.innerHTML;
+
+			  secondDiv.className = "flapBackGroundColor upperHalfCard zIndex4";
+			  thirdDiv.className = "flapBackGroundColor lowerHalfCard zIndex4";
+			  firstDiv.className = "hide";
+			  groundDiv.className="hide flapBackGroundColor";
+			}
+		</script>
+	</head>
+	<body>
+		<p>
+		  <div class="splitFlap">
+			<div id="ground" class="hide flapBackGroundColor">
+			  2
+			</div>
+			<div id="1st" class="hide">
+			  2
+			</div>
+			<div id="2nd" class="flapBackGroundColor upperHalfCard zIndex4">
+			  1
+			</div>
+			<div id="3rd" class="flapBackGroundColor lowerHalfCard zIndex4">
+			  1
+			</div>
+			<div class="middle zIndex10"></div>
+		  </div>
+		</p>
+		<button onclick="forward()">+</button>
+		<button onclick="backward()">-</button>
+	</body>
+</html>	
