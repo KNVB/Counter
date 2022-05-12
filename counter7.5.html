@@ -1,0 +1,214 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			.bb,
+			.fullCard,
+			.halfCard {
+			  background-color: black;
+			  border-radius: 10px;
+			  height: 100%;
+			  width: 100%;
+			  position: absolute;
+			}
+		
+			.fullCard::after {
+			  content: "";
+			  display: block;
+			  position: absolute;
+			  height: 2px;
+			  background-color: black;
+			  width: 100%;
+			  top: 50%;
+			}
+
+			.halfCard {
+			  clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%);
+			}
+
+			.splitFlap {
+			  box-sizing: border-box;
+			  border-radius: 10px;
+			  color: white;
+			  font-weight: bold;
+			  font-family: arial;
+			  font-size: 5.5em;
+			  line-height: 150px;
+			  text-align: center;
+			  width: 100px;
+			  height: 150px;
+			  position: relative;
+			  transform-style: preserve-3d;
+			}
+
+			.rotate0to90 {
+			  animation-name: r0to90;
+			}
+
+			.rotate90to0 {
+			  animation-name: r90to0;
+			}
+
+			.rotate0to_90 {
+			  animation-name: r0to_90;
+			}
+
+			.rotate_90to0 {
+			  animation-name: r_90to0;
+			}
+
+			.rotate0to90,
+			.rotate90to0,
+			.rotate0to_90,
+			.rotate_90to0 {
+			  animation-duration: 0.3s;
+			  animation-fill-mode: forwards;
+			}
+
+			@keyframes r0to90 {
+			  from {
+				transform: rotateX(0deg);
+			  }
+
+			  to {
+				transform: rotateX(90deg);
+			  }
+			}
+
+			@keyframes r90to0 {
+			  from {
+				transform: rotateX(90deg);
+			  }
+
+			  to {
+				transform: rotateX(0deg);
+			  }
+			}
+
+			@keyframes r0to_90 {
+			  from {
+				transform: rotateX(0deg);
+			  }
+
+			  to {
+				transform: rotateX(-90deg);
+			  }
+			}
+
+			@keyframes r_90to0 {
+			  from {
+				transform: rotateX(-90deg);
+			  }
+
+			  to {
+				transform: rotateX(0deg);
+			  }
+			}
+
+			.transform0to_90 {
+			  transform: rotateX(-90deg);
+			}
+
+			.transform0to90 {
+			  transform: rotateX(90deg);
+			}
+
+			.zIndex2 {
+			  z-index: 2;
+			}
+
+			.zIndex4 {
+			  z-index: 4;
+			}
+
+			.zIndex10 {
+			  z-index: 10;
+			}
+			.blue{
+			   background-color: blue
+			}
+			.green{
+			   background-color: green
+			}
+			.red{
+			   background-color: red
+			}
+			.orange{
+			  background-color: orange
+			}
+		</style>
+		<script src="https://code.jquery.com/jquery-3.2.1.js"></script>	
+		<script>
+			let firstDiv,fourthDiv,secondDiv,thirdDiv;
+			$( document ).ready(()=>{
+				firstDiv=document.getElementById("first");
+				fourthDiv=document.getElementById("fourth");
+				secondDiv=document.getElementById("second");
+				thirdDiv=document.getElementById("third");
+			});
+			function backward(){
+				$(thirdDiv).addClass("transform0to_90");
+			  $(secondDiv).addClass("rotate0to90");
+			}
+			function forward(){
+			  $(firstDiv).addClass("transform0to90");
+				$(fourthDiv).addClass("rotate0to_90");		
+			}
+			function firstDivHandle(){
+				$(fourthDiv).html($(firstDiv).html());
+			  $(secondDiv).html($(firstDiv).html());
+				resume();
+			}
+
+			function secondDivHandle(){
+				$(thirdDiv).removeClass("zIndex2").addClass("zIndex4");
+			  $(thirdDiv).addClass("rotate_90to0");  
+			}
+			function thirdDivHandle(){
+				$(fourthDiv).html($(thirdDiv).html());
+			  $(secondDiv).html($(firstDiv).html());
+			  resume();
+			}
+			function fourDivHandle(){
+				$(firstDiv).removeClass("zIndex2").addClass("zIndex4");
+				$(firstDiv).addClass("rotate90to0");
+			}
+			function resume(){
+			  firstDiv.className="bb zIndex2";
+			  secondDiv.className="bb zIndex2";
+			  thirdDiv.className="halfCard zIndex2";
+			  fourthDiv.className="halfCard zIndex4";  
+			  
+			}
+			function setHinge(){
+				firstDiv.className="bb zIndex2";
+				secondDiv.className="bb zIndex2";
+			}
+		</script>
+	</head>
+	<body>
+		<p>
+			<div class="splitFlap">
+			  <div id="first" class="bb zIndex2" onAnimationEnd="firstDivHandle()">
+				因
+			  </div>
+			  <div id="second" class="bb zIndex2" onAnimationEnd="secondDivHandle()">
+				果
+			  </div>
+			  <div id="third" class="halfCard zIndex2" onAnimationEnd="thirdDivHandle()">
+				因
+			  </div>
+			  <div id="fourth" class="halfCard zIndex4" onAnimationEnd="fourDivHandle()">
+				果
+			  </div>
+			</div>
+		</p>
+		<button onClick="forward()">
+		  +
+		</button>
+		<button onClick="backward()">
+		 -
+		</button>
+		<button onClick="setHinge()">Set Hinge</button>
+	</body>
+</html>	
