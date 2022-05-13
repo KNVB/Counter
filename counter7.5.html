@@ -174,8 +174,8 @@
 				$(firstDiv).addClass("rotate90to0");
 			}
 			function resume(){
-			  firstDiv.className="bb zIndex2";
-			  secondDiv.className="bb zIndex2";
+			  firstDiv.className="fullCard zIndex2";
+			  secondDiv.className="fullCard zIndex2";
 			  thirdDiv.className="halfCard zIndex2";
 			  fourthDiv.className="halfCard zIndex4";  
 			  
@@ -189,17 +189,17 @@
 	<body>
 		<p>
 			<div class="splitFlap">
-			  <div id="first" class="bb zIndex2" onAnimationEnd="firstDivHandle()">
-				因
+			  <div id="first" class="fullCard zIndex2" onAnimationEnd="firstDivHandle()">
+				A
 			  </div>
-			  <div id="second" class="bb zIndex2" onAnimationEnd="secondDivHandle()">
-				果
+			  <div id="second" class="fullCard zIndex2" onAnimationEnd="secondDivHandle()">
+				O
 			  </div>
 			  <div id="third" class="halfCard zIndex2" onAnimationEnd="thirdDivHandle()">
-				因
+				A
 			  </div>
 			  <div id="fourth" class="halfCard zIndex4" onAnimationEnd="fourDivHandle()">
-				果
+				O
 			  </div>
 			</div>
 		</p>
