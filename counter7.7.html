@@ -13,6 +13,11 @@
 			  height: 100%;
 			  width: 100%;
 			  position: absolute;
+			  
+			  display: flex;
+			  justify-content: center;
+			  align-items: center;			  
+			  transform-style: preserve-3d;
 			}
 		
 			.fullCard-after::after,
@@ -51,11 +56,11 @@
 			  font-weight: bold;
 			  font-family: arial;
 			  font-size: 5.5em;
-			  line-height: 150px;
-			  text-align: center;
+			  
 			  width: 100px;
 			  height: 150px;
-			  position: relative;			 
+			  position: relative;
+			  			  
 			}
 
 			.rotate0to90 {
@@ -84,7 +89,7 @@
 
 			@keyframes r0to90 {
 			  from {
-				transform: rotateX(0deg);
+				transform:rotateX(0deg);
 			  }
 
 			  to {
@@ -156,38 +161,39 @@
 			  background-color: orange
 			}
 		</style>
-		<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 		<script>
 			let baseDiv,lowerDiv,middleDiv,upperDiv;
-			$( document ).ready(()=>{
+			document.addEventListener("DOMContentLoaded",()=>{
 				baseDiv=document.getElementById("base");
 				lowerDiv=document.getElementById("lower");
 				middleDiv=document.getElementById("middle");
 				upperDiv=document.getElementById("upper");
 			});
 			let backward=()=>{
+			    middleDiv.innerHTML=baseDiv.innerHTML;
 				lowerDiv.classList.add("rotate0to90");
+				middleDiv.className="upperHalfCard-after transform0to_90 zIndex4";
 			}
 			let forward=()=>{
+				middleDiv.innerHTML=baseDiv.innerHTML;
 				upperDiv.classList.add("rotate0to_90");
+				middleDiv.className="lowerHalfCard-after transform0to90 zIndex4";
 			}
 			
 			let upperHandler=()=>{
-				upperDiv.classList.replace("zIndex4","zIndex2");
-				$(middleDiv).html($(baseDiv).html());
-				middleDiv.className="lowerHalfCard-after zIndex4 rotate90to0 transform0to90"
+				middleDiv.classList.add("rotate90to0");
+				upperDiv.classList.replace("zIndex4","zIndex2");				
 			}
 			let lowerHandler=()=>{
 				lowerDiv.classList.replace("zIndex4","zIndex2");
-				$(middleDiv).html($(baseDiv).html());
-				middleDiv.className="upperHalfCard-after zIndex4 rotate_90to0 transform0to_90";
+				middleDiv.classList.add("rotate_90to0");				
 			}
 			let middleHandler=()=>{
-				$(upperDiv).html($(baseDiv).html());
-				$(lowerDiv).html($(baseDiv).html());
+				upperDiv.innerHTML=baseDiv.innerHTML;
+				lowerDiv.innerHTML=baseDiv.innerHTML;
+				middleDiv.className="hide";
 				upperDiv.className="upperHalfCard-after zIndex4";
 				lowerDiv.className="lowerHalfCard-after zIndex2";
-				middleDiv.className="hide";
 			}
 		</script>
 	</head>
@@ -196,13 +202,13 @@
 			<div 
 				id="base" 
 				class="fullCard-after zIndex2">
-				O
+				<img src="img/1_100.png">
 			</div>
 			<div 
 				class="upperHalfCard-after zIndex4"
 				id="upper"
 				onAnimationEnd="upperHandler()">
-				A
+				<img src="img/0_100.png">
 			</div>
 			<div 
 				id="middle"
@@ -213,7 +219,7 @@
 				class="lowerHalfCard-after zIndex2" 
 				id="lower"
 				onAnimationEnd="lowerHandler()">
-				A
+				<img src="img/0_100.png">
 			</div>
 		</div>
 		<p>
@@ -223,7 +229,6 @@
 			<button onClick="backward()">
 			 -
 			</button>
-			<button onClick="setHinge()">Set Hinge</button>
 		</p>
 	</body>
 </html>	
