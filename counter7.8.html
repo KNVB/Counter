@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -207,7 +208,7 @@
 			}
 			let start=()=>{
 				intervalId=setInterval(()=>{
-					console.log("Kicked by interval");
+					console.log("Kicked by interval,Has focus:"+document.hasFocus());					
 					forward();
 				},4000);
 			}
